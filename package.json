@@ -1,0 +1,24 @@
+{
+  "name": "lord-sebas",
+  "version": "0.0.1",
+  "description": "Lord Sebas discord bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tomzig16/lord-sebas-js.git"
+  },
+  "author": "TheSith",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tomzig16/lord-sebas-js/issues"
+  },
+  "homepage": "https://github.com/tomzig16/lord-sebas-js#readme",
+  "dependencies": {
+    "discord.js": "^11.3.2",
+    "dotenv": "^5.0.1",
+    "mysql": "^2.15.0"
+  }
+}
