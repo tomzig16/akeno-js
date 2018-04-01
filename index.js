@@ -1,6 +1,7 @@
 require('dotenv').config();
 var mysql = require('mysql');
-var serverControl = require('./server_control.js');
+var serverControl = require('./scripts/server_control.js');
+var botCommand = require('./scripts/bot_commands.js')
 const Discord = require('discord.js');
 
 
@@ -11,6 +12,7 @@ client.login(token);
 
 client.on('ready', function() {
   console.log('Bot has been started');
+  client.user.setActivity(`over ${client.guilds.size} server`, "WATCHING");
 });
 
 
