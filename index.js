@@ -12,7 +12,7 @@ client.login(token);
 
 client.on('ready', function() {
   console.log('Bot has been started');
-  client.user.setActivity(`over ${client.guilds.size} server`, "WATCHING");
+  client.user.setActivity(`over ${client.guilds.size} servers`, { type: "WATCHING" });
 });
 
 
