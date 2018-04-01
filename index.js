@@ -1,7 +1,7 @@
 require('dotenv').config();
 var mysql = require('mysql');
 var serverControl = require('./scripts/server_control.js');
-var botCommand = require('./scripts/bot_commands.js')
+var botCommands = require('./scripts/bot_commands.js');
 const Discord = require('discord.js');
 
 const prefix = "!";
@@ -23,7 +23,8 @@ client.on('ready', function() {
 var con = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
-  password: process.env.DB_PASS
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME
 });
 
 con.connect(function(err) {
@@ -33,17 +34,24 @@ con.connect(function(err) {
 
 
 // Bot commands
-client.on("message", message => {
+client.on("message", async message => {
   if(message.author.bot) return;
   if(message.content.indexOf(prefix) !== 0) return;
 
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   const command = args.shift().toLowerCase();
 
-  if (command === "addusr") {
-    serverControl.OnAddUserCMD();
+  if (command === "addserver") {
+    botCommands.OnAddServer(message.guild, con);
+    if(message.author.id === message.guild.ownerID){
+      
+    }
+    else{
+      return message.reply("Sorry, you don't have permission to do that.");
+    }
   }
 });
+
 
 client.on("guildCreate", guild => {
   serverControl.OnBotAdded(client, guild);
