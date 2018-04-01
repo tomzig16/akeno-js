@@ -1,4 +1,5 @@
-# lord-sebas-js
-Lord Sebas discord bot
+# Akeno JS
+
+Akeno discord bot
 
 ```npm install```

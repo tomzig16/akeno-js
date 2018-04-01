@@ -4,6 +4,8 @@ var serverControl = require('./scripts/server_control.js');
 var botCommand = require('./scripts/bot_commands.js')
 const Discord = require('discord.js');
 
+const prefix = "!";
+
 
 // Connecting Discord bot
 const client = new Discord.Client();
@@ -30,10 +32,15 @@ con.connect(function(err) {
 });
 
 
-
 // Bot commands
 client.on("message", message => {
-  if (message.content === "!addusr") {
+  if(message.author.bot) return;
+  if(message.content.indexOf(prefix) !== 0) return;
+
+  const args = message.content.slice(prefix.length).trim().split(/ +/);
+  const command = args.shift().toLowerCase();
+
+  if (command === "addusr") {
     serverControl.OnAddUserCMD();
   }
 });
