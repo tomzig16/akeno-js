@@ -42,6 +42,7 @@ client.on("message", async message => {
   const command = args.shift().toLowerCase();
 
   if (command === "addserver") {
+    /* temp for debugging */
     botCommands.OnAddServer(message.guild, con);
     if(message.author.id === message.guild.ownerID){
       
