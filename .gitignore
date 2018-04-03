@@ -1,3 +1,4 @@
+.vscode/
 ignored/
 node_modules/
 .env
