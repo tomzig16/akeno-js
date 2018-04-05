@@ -1,7 +1,6 @@
 require('dotenv').config();
 var mysql = require('mysql');
-var serverControl = require('./scripts/server_control.js');
-var botCommands = require('./scripts/bot_commands.js');
+var serverControl = require('./scripts/server_interactions.js');
 const Discord = require('discord.js');
 
 const prefix = "!";
@@ -43,7 +42,7 @@ client.on("message", async message => {
 
   if (command === "addserver") {
     if(message.author.id === message.guild.ownerID){
-      botCommands.OnAddServer(message.guild, con, function(result){
+      serverControl.OnAddServer(message.guild, con, function(result){
         if(result === true){
           message.reply("good news! Server was added to my database, and your user was created as well!");
         }
