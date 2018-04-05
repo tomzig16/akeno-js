@@ -1,16 +1,20 @@
 module.exports = {
-  OnAddServer: function(server, dbConnection){
+  OnAddServer: function(server, dbConnection, actionResult){
     var sql = "SELECT * FROM `servers` WHERE `dscr_id` = " + server.id;
     dbConnection.query(sql, function (err, result, fields) {
       if (err) throw err;
       if(result == ""){
         InsertServer(server, dbConnection);
+        actionResult(true);
       }
       else{
         console.log("Server already exists in database.");
+        actionResult(false);
       }
     });
   }
+
+
 };
 
 function InsertServer(server, dbConnection){
