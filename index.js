@@ -71,8 +71,7 @@ client.on("message", async message => {
         console.log("Unknown callback message?");
       }
     });
-  }
-});
+  }});
 
 
 client.on("guildCreate", guild => {

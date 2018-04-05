@@ -85,12 +85,7 @@ function InsertServerOwner(serverOwner, serverTableID, dbConnection){
     });
 
     // Insert into user_stats table
-    var sqlInsertUStats = "INSERT INTO `user_stats` (`id`, `user_fk`, `honored`, `spare_honors`) " +
-    "VALUES (NULL, '" + result_ins_usr.insertId + "', '0', '15');";
-    dbConnection.query(sqlInsertUStats, function (err_ins_ustats, result_ins_ustats) {
-      if (err_ins_ustats) throw err_ins_ustats;
-      console.log("User stats row was added to DB.");
-    });
+    AddUserStatsRow(result_ins_usr.insertId, dbConnection);
   });
 }
 
@@ -99,6 +94,7 @@ function GetServerFK(serverID, dbConnection, CallbackFK){
   dbConnection.query(sqlServerID, function (err, result, fields) {
     if (err) throw err;
     if(result != ""){
+      AddUserStatsRow(result[0].id, dbConnection);
       CallbackFK(result[0].id);
     }
     else{
@@ -129,6 +125,14 @@ function AddUserToDB(userID, serverID, dbConnection){
   dbConnection.query(sqlInsertUser, function (error, result) {
     if (error) throw error;
     console.log("New user was added to users DB.");
+  });
+}
+
+function AddUserStatsRow(userFK, dbConnection){
+  var sqlInsertUStats = "INSERT INTO `user_stats` (`id`, `user_fk`, `honored`, `spare_honors`) " +
+  "VALUES (NULL, '" + userFK + "', '0', '15');";
+  dbConnection.query(sqlInsertUStats, function (err_ins_ustats, result_ins_ustats) {
+    if (err_ins_ustats) throw err_ins_ustats;
   });
 }
 
