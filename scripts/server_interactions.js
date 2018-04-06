@@ -94,7 +94,6 @@ function GetServerFK(serverID, dbConnection, CallbackFK){
   dbConnection.query(sqlServerID, function (err, result, fields) {
     if (err) throw err;
     if(result != ""){
-      AddUserStatsRow(result[0].id, dbConnection);
       CallbackFK(result[0].id);
     }
     else{
@@ -124,6 +123,7 @@ function AddUserToDB(userID, serverID, dbConnection){
   "(NULL, '" + userID + "', '" + userID + "', '" + serverID + "');";
   dbConnection.query(sqlInsertUser, function (error, result) {
     if (error) throw error;
+    AddUserStatsRow(result[0].id, dbConnection);
     console.log("New user was added to users DB.");
   });
 }
