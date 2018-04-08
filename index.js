@@ -1,6 +1,6 @@
 require('dotenv').config();
 var mysql = require('mysql');
-var serverControl = require('./scripts/server_interactions.js');
+var userCommands = require('./scripts/user_commands.js');
 const Discord = require('discord.js');
 
 const prefix = "!";
@@ -13,7 +13,6 @@ client.login(token);
 
 client.on('ready', function() {
   console.log('Bot has been started');
-  client.user.setActivity(`over ${client.guilds.size} servers`, { type: "WATCHING" });
 });
 
 
@@ -41,43 +40,19 @@ client.on("message", async message => {
   const command = args.shift().toLowerCase();
 
   if (command === "addserver") {
-    if(message.author.id === message.guild.ownerID){
-      serverControl.OnAddServer(message.guild, con, function(result){
-        if(result === true){
-          message.reply("good news! Server was added to my database, and your user was created as well!");
-        }
-        else{
-          message.reply("looks like this server already exists in my database!");
-        }
-      });
-    }
-    else{
-      return message.reply("Sorry, you don't have permission to do that.");
-    }
+    userCommands.CMD_AddServer(message, con);
   }
 
   if(command === "join_h"){
-    serverControl.OnAddUser(message.guild.id, message.author.id, con, function(result){
-      if(result === "User already exists"){
-        message.reply("seems like you already exist...");
-      }
-      else if(result === "Server not found"){
-        message.reply("oof! This server does not exist in my memory.");
-      }
-      else if(result === "OK"){
-        message.reply("Yay! I have added you to my database!\nYou can check your status with !status command");
-      }
-      else{
-        console.log("Unknown callback message?");
-      }
-    });
+    userCommands.CMD_JoinH(message, con);
+  
   }});
 
 
 client.on("guildCreate", guild => {
-  serverControl.OnBotAdded(client, guild);
+  console.log("New guild joined");
 });
 
 client.on("guildDelete", guild => {
-  serverControl.OnBotRemoved(client, guild);
+  console.log("Removed from a guild");
 });

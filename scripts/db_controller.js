@@ -1,15 +1,5 @@
 module.exports = {
-  OnBotAdded: function(botClient, serverData){
-    console.log(`New guild joined: ${serverData.name} (id: ${serverData.id}). This guild has ${serverData.memberCount} members!`);
-    botClient.user.setActivity(`over ${botClient.guilds.size} servers`, { type: "WATCHING" } );
-  },
-
-  OnBotRemoved: function(botClient, serverData){
-    console.log(`I have been removed from: ${serverData.name} (id: ${serverData.id})`);
-    botClient.user.setActivity(`over ${botClient.guilds.size} servers`, { type: "WATCHING" });
-  },
-
-  OnAddServer: function(server, dbConnection, ResultCallback){
+  AddServer: function(server, dbConnection, ResultCallback){
     var sql = "SELECT * FROM `servers` WHERE `dscr_id` = " + server.id;
     dbConnection.query(sql, function (err, result, fields) {
       if (err) throw err;
@@ -24,7 +14,7 @@ module.exports = {
     });
   },
 
-  OnAddUser: function(serverID, userID, dbConnection, ResultCallback){
+  AddUser: function(serverID, userID, dbConnection, ResultCallback){
     // Get server FK ID. If server does not exist, FK will be -1
     GetServerFK(serverID, dbConnection, FK => {
       if(FK >= 0){
