@@ -61,3 +61,18 @@ client.on("guildCreate", guild => {
 client.on("guildDelete", guild => {
   console.log("Removed from a guild");
 });
+
+// MySQL keeps disconnecting if it is inactive for a period of time,
+// In order to avoid that, this function will be pinging it each hour or so
+setInterval(function(){
+  var sql = "SELECT `name` FROM `users` WHERE `users`.`id` = 1";
+  con.query(sql, function (err, result, fields) {
+    if (err) throw err;
+    var date = new Date();
+    var printMessage =  "[" + date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear() +
+                        " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + "] " + 
+                        "Ping... Selected name: " + result[0].name;
+    console.log(printMessage);
+  });
+}, 14400000); // Pinging each 4 hours
+
