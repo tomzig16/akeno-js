@@ -60,6 +60,24 @@ module.exports = {
         ExistsCallback(true);
       }
     });
+  },
+
+  GetUserStats: function(userID, serverID, dbConnection, ResultsCallback){
+    var sql = "SELECT `user_stats`.`id`, `user_stats`.`honored`, `user_stats`.`spare_honors` " + 
+              "FROM `users`, `servers`, `user_stats` " +
+              "WHERE `servers`.`dscr_id` = " + serverID + " " +
+              "AND `users`.`server_fk` = `servers`.`id` " + 
+              "AND `users`.`dscr_id` = " + userID + " " +
+              "AND `user_stats`.`user_fk` = `users`.`id`";
+    dbConnection.query(sql, function (err, result, fields) {
+      if (err) throw err;
+      if(result != ""){
+        ResultsCallback(result[0]);
+      }
+      else{
+        ResultsCallback(null);
+      }
+    });
   }
 
 };

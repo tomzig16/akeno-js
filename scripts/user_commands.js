@@ -34,7 +34,30 @@ module.exports = {
   },  
     
   CMD_Status: function(message, con){
-    
+    serverControl.GetServerFK(message.guild.id, con, serverFK => {
+      if(serverFK < 0) {
+        message.reply("sorry, but seems like I don't know anything about this server...");
+      }
+      else {
+        serverControl.DoesUserExistInDB(message.author.id, message.guild.id, con, exists => {
+          if(exists === false){
+            message.reply("seems like I don't know anything about you :c. Join our team - `!join_h`!");
+          }
+          else{
+            serverControl.GetUserStats(message.author.id, message.guild.id, con, results => {
+              if(results == null){
+                message.reply("sorry, something went wrong...");
+                console.log("Failed reading user's stats. User dscr_id: " + message.author.id);
+              }
+              else{
+                message.reply("gotcha! Let's see...\nHere's what I remember - " +
+                "You were honored " + results.honored + " times and now you can honor someone for up to " + results.spare_honors + " honor points.");
+              }
+            });
+          }
+        });
+      }
+    });
   }
 
 };
