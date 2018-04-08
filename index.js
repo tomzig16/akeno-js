@@ -45,8 +45,13 @@ client.on("message", async message => {
 
   if(command === "join_h"){
     userCommands.CMD_JoinH(message, con);
-  
-  }});
+  }
+
+  if(command === "status"){
+    userCommands.CMD_Status(message, con);
+  }
+
+});
 
 
 client.on("guildCreate", guild => {

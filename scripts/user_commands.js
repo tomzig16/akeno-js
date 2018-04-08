@@ -31,6 +31,10 @@ module.exports = {
         console.log("Unknown callback message?");
       }
     });
-  }  
+  },  
     
+  CMD_Status: function(message, con){
+    
+  }
+
 };

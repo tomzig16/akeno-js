@@ -16,9 +16,9 @@ module.exports = {
 
   AddUser: function(serverID, userID, dbConnection, ResultCallback){
     // Get server FK ID. If server does not exist, FK will be -1
-    GetServerFK(serverID, dbConnection, FK => {
+    this.GetServerFK(serverID, dbConnection, FK => {
       if(FK >= 0){
-        DoesUserExistInDB(userID, serverID, dbConnection, userExists => {
+        this.DoesUserExistInDB(userID, serverID, dbConnection, userExists => {
           if(userExists === true){
             ResultCallback("User already exists");
           }
@@ -33,7 +33,35 @@ module.exports = {
         ResultCallback("Server not found");
       }
     });
+  },
+
+  GetServerFK: function(serverID, dbConnection, CallbackFK){
+    var sqlServerID = "SELECT `id` FROM `servers` WHERE `dscr_id` = " + serverID;
+    dbConnection.query(sqlServerID, function (err, result, fields) {
+      if (err) throw err;
+      if(result != ""){
+        CallbackFK(result[0].id);
+      }
+      else{
+        CallbackFK(-1);
+      }
+    });
+  },
+  
+  DoesUserExistInDB: function(userID, serverID, dbConnection, ExistsCallback){
+    var sql = "SELECT `users`.`id` FROM `users`, `servers` WHERE `servers`.`dscr_id` = " + serverID + 
+    " AND `users`.`server_fk` = `servers`.`id` AND `users`.`dscr_id` = " + userID;
+    dbConnection.query(sql, function (err, result, fields) {
+      if (err) throw err;
+      if(result == ""){
+        ExistsCallback(false);
+      }
+      else{
+        ExistsCallback(true);
+      }
+    });
   }
+
 };
 
 
@@ -76,35 +104,6 @@ function InsertServerOwner(serverOwner, serverTableID, dbConnection){
 
     // Insert into user_stats table
     AddUserStatsRow(result_ins_usr.insertId, dbConnection);
-  });
-}
-
-function GetServerFK(serverID, dbConnection, CallbackFK){
-  var sqlServerID = "SELECT `id` FROM `servers` WHERE `dscr_id` = " + serverID;
-  dbConnection.query(sqlServerID, function (err, result, fields) {
-    if (err) throw err;
-    if(result != ""){
-      CallbackFK(result[0].id);
-    }
-    else{
-      CallbackFK(-1);
-    }
-  });
-  
-
-}
-
-function DoesUserExistInDB(userID, serverID, dbConnection, ExistsCallback){
-  var sql = "SELECT `users`.`id` FROM `users`, `servers` WHERE `servers`.`dscr_id` = " + serverID + 
-  " AND `users`.`server_fk` = `servers`.`id` AND `users`.`dscr_id` = " + userID;
-  dbConnection.query(sql, function (err, result, fields) {
-    if (err) throw err;
-    if(result == ""){
-      ExistsCallback(false);
-    }
-    else{
-      ExistsCallback(true);
-    }
   });
 }
 
