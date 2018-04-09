@@ -130,7 +130,7 @@ function AddUserToDB(userID, serverID, dbConnection){
   "(NULL, '" + userID + "', '" + userID + "', '" + serverID + "');";
   dbConnection.query(sqlInsertUser, function (error, result) {
     if (error) throw error;
-    AddUserStatsRow(result[0].id, dbConnection);
+    AddUserStatsRow(result.insertId, dbConnection);
     console.log("New user was added to users DB.");
   });
 }
