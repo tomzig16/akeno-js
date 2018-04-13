@@ -1,8 +1,13 @@
 let serverControl = require('./db_controller.js');
 module.exports = {
-  CMD_AddServer: function(message, con){
+  ConnectDB: function(){
+    serverControl.dbConnect();
+    serverControl.StartServerPokingRoutine();
+  },
+
+  CMD_AddServer: function(message){
     if(message.author.id === message.guild.ownerID){
-      serverControl.AddServer(message.guild, con, function(result){
+      serverControl.AddServer(message.guild, function(result){
         if(result === true){
           message.reply("good news! Server was added to my database, and your user was created as well!");
         }
@@ -16,8 +21,8 @@ module.exports = {
     }
   },
 
-  CMD_JoinH: function(message, con){
-    serverControl.AddUser(message.guild.id, message.author.id, con, function(result){
+  CMD_JoinH: function(message){
+    serverControl.AddUser(message.guild.id, message.author.id, function(result){
       if(result === "User already exists"){
         message.reply("seems like you already exist...");
       }
@@ -33,18 +38,18 @@ module.exports = {
     });
   },  
     
-  CMD_Status: function(message, con){
-    serverControl.GetServerFK(message.guild.id, con, serverFK => {
+  CMD_Status: function(message){
+    serverControl.GetServerFK(message.guild.id, serverFK => {
       if(serverFK < 0) {
         message.reply("sorry, but seems like I don't know anything about this server...");
       }
       else {
-        serverControl.DoesUserExistInDB(message.author.id, message.guild.id, con, exists => {
+        serverControl.DoesUserExistInDB(message.author.id, message.guild.id, exists => {
           if(exists === false){
             message.reply("seems like I don't know anything about you :c. Join our team - `!join_h`!");
           }
           else{
-            serverControl.GetUserStats(message.author.id, message.guild.id, con, results => {
+            serverControl.GetUserStats(message.author.id, message.guild.id, results => {
               if(results == null){
                 message.reply("sorry, something went wrong...");
                 console.log("Failed reading user's stats. User dscr_id: " + message.author.id);
