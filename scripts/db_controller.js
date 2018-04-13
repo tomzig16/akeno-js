@@ -104,6 +104,29 @@ module.exports = {
         ResultsCallback(null);
       }
     });
+  },
+
+  GiveHonorPoints: function(senderID, receiverID, serverID, amount){
+    /*
+    UPDATE table_name
+SET column1 = value1, column2 = value2, ...
+WHERE condition; 
+     */
+    this.GetUserStats(senderID, serverID, senderStats =>{
+      this.GetUserStats(receiverID, serverID, receiverStats =>{
+        // at this point, both stats should exist.
+        var sqlGivePoints = "UPDATE `user_stats` SET `honored` = " + (receiverStats.honored + amount) + " WHERE `user_stats`.`id` = " + receiverStats.id + ";"; 
+        var sqlTakePoints = "UPDATE `user_stats` SET `spare_honors` = " + (senderStats.spare_honors - amount) + " WHERE `user_stats`.`id` = " + senderStats.id + ";";
+        dbConnection.query(sqlGivePoints, function (err, result) {
+          if (err) throw err;
+          console.log(result.affectedRows + " record(s) updated");
+        });
+        dbConnection.query(sqlTakePoints, function (err, result){
+          if (err) throw err;
+          console.log(result.affectedRows + " record(s) updated");
+        });
+      });
+    });
   }
 
 };

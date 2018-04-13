@@ -35,6 +35,10 @@ client.on("message", async message => {
     userCommands.CMD_Status(message);
   }
 
+  if(command === "pat"){
+    userCommands.CMD_Pat(message, args);
+  }
+
 });
 
 

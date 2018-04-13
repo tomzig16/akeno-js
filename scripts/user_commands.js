@@ -1,5 +1,12 @@
 let serverControl = require('./db_controller.js');
 module.exports = {
+
+  honorsAndValues: {
+    pat: 1,
+    thank: 5,
+    colect: 20
+  },
+
   ConnectDB: function(){
     serverControl.dbConnect();
     serverControl.StartServerPokingRoutine();
@@ -61,6 +68,38 @@ module.exports = {
             });
           }
         });
+      }
+    });
+  },
+
+  CMD_Pat: function(message, args){
+    if(args.length != 1){
+      message.reply(" if you want to pat someone, use `!pat [target name]`");
+      return;
+    }
+
+    serverControl.DoesUserExistInDB(message.author.id, message.guild.id, doesExist =>{
+      if(doesExist === false){
+        message.reply("sorry, but I don't know anything about you yet... Let's be friends! `!join_h`");
+      }
+      else{
+        if(message.mentions.members.size != 0){
+          let discord_id = args[0].replace("<@", "");
+          discord_id = discord_id.replace(">", "");
+          discord_id = discord_id.replace("!", ""); // if user has username
+          serverControl.DoesUserExistInDB(discord_id, message.guild.id, targetExists =>{
+            if(targetExists === true){
+              serverControl.GiveHonorPoints(message.author.id, discord_id, message.guild.id, this.honorsAndValues["pat"]);
+            }
+            else{
+              message.reply("looks like your friend does not exist...");
+            }
+          });
+        }
+        else{
+          //SELECT `name` FROM `users` WHERE `name` LIKE '%2%' 
+        }
+
       }
     });
   }
