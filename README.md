@@ -49,7 +49,7 @@ All honoring commands accept both - mention (`!pat @The Sith#4143`) and name str
 
 ## Other questions and info
 
-Here are some details which might be interesting. Currently bot 
+Here are some details which might be interesting. 
 * Bot is currently running on my raspberry pi and it is located in Easter Europe. Keep that in mind if you experience any latency.
 * Bot is written in [Discord.js](https://discord.js.org) and uses MySQL database
 * Q: What data is actually stored?</br>
