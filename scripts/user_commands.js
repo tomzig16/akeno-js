@@ -96,6 +96,10 @@ module.exports = {
           var receiver_id = args[0].replace("<@", "");
           receiver_id = receiver_id.replace(">", "");
           receiver_id = receiver_id.replace("!", ""); // if user has username
+          if(receiver_id === message.author.id){
+            message.reply("you are already the most honorable for me, you don't have to honor yourself <3");
+            return;
+          }
           serverControl.DoesUserExistInDB(receiver_id, message.guild.id, targetExists =>{
             if(targetExists === true){
               let amount = 0;
@@ -105,15 +109,13 @@ module.exports = {
               else{
                 amount = this.honorTypesAndValues[type]
               }
+              if(amount === 0){
+                message.reply("uhm... Well, I could give hime those zero points, I guess...");
+                return;
+              }
               serverControl.GiveHonorPoints(message.author.id, receiver_id, message.guild.id, amount, status =>{
                 if(status === "NotEnoughSparePoints"){
                   message.reply("looks like you don't have enough spare points to give :/.\nYou can check your amount of spare points using `!status` command!");
-                }
-                else if(status === "GivingZeroPoints"){
-                  message.reply("uhm... Well, I could give hime those zero points, I guess...");
-                }
-                else if(status === "SenderIsReceiver"){
-                  message.reply("you are already the most honorable for me, you don't have to honor yourself <3");
                 }
                 else if(status === "OK"){
                   message.channel.send(args[0] + ", you were honored for " + amount + " points!\nYou can always check your status with `!status`");

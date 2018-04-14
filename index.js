@@ -35,6 +35,12 @@ client.on("message", async message => {
   else if(command === "pat"){
     userCommands.CMD_Honor(message, args, "pat");
   }
+  else if(command === "thank"){
+    userCommands.CMD_Honor(message, args, "thank");
+  }
+  else if(command === "honor"){
+    userCommands.CMD_Honor(message, args, "honor");
+  }
   else{
     message.reply("sorry, I don't really understand you. `!help` will tell you more!");
   }

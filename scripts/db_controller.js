@@ -107,32 +107,22 @@ module.exports = {
   },
 
   GiveHonorPoints: function(senderID, receiverID, serverID, amount, statusCallback){
-    if(senderID === receiverID){
-      statusCallback("SenderIsReceiver");
-      return;
-    }
     this.GetUserStats(senderID, serverID, senderStats =>{
       this.GetUserStats(receiverID, serverID, receiverStats =>{
         // at this point, both stats should exist.
         if(senderStats.spare_honors < amount){
           statusCallback("NotEnoughSparePoints");
         }
-        else if(amount == 0){
-          statusCallback("GivingZeroPoints");
-        }
         else{
-          var sqlGivePoints = "UPDATE `user_stats` SET `honored` = " + (receiverStats.honored + amount) + " WHERE `user_stats`.`id` = " + receiverStats.id + ";"; 
-          var sqlTakePoints = "UPDATE `user_stats` SET `spare_honors` = " + (senderStats.spare_honors - amount) + " WHERE `user_stats`.`id` = " + senderStats.id + ";";
-          var updatedRowCounter = 0;
+          var sqlGivePoints = "UPDATE `user_stats` SET `honored` = " + (receiverStats.honored + parseInt(amount)) + " WHERE `user_stats`.`id` = " + receiverStats.id + ";"; 
+          var sqlTakePoints = "UPDATE `user_stats` SET `spare_honors` = " + (senderStats.spare_honors - parseInt(amount)) + " WHERE `user_stats`.`id` = " + senderStats.id + ";";
           dbConnection.query(sqlGivePoints, function (err, result) {
             if (err) throw err;
-            updatedRowCounter++;
           });
           dbConnection.query(sqlTakePoints, function (err, result){
             if (err) throw err;
-            updatedRowCounter++;
           });
-          console.log(updatedRowCounter + "record(s) updated");
+          console.log(receiverID + " has been honored");
           statusCallback("OK");
         }
       });
