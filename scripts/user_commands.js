@@ -114,6 +114,7 @@ module.exports = {
 
         if(receiver_id == ""){
           message.reply("looks like a person you entered does not exist in this server...\nThe most reliable way of honoring someone is by mentioning them ^.^");
+          return;
         }
         if(receiver_id === message.author.id){
           message.reply("you are already the most honorable for me, you don't have to honor yourself <3");
