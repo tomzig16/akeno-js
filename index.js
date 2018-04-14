@@ -26,17 +26,17 @@ client.on("message", async message => {
   if (command === "addserver") {
     userCommands.CMD_AddServer(message);
   }
-
-  if(command === "join_h"){
+  else if(command === "join_h"){
     userCommands.CMD_JoinH(message);
   }
-
-  if(command === "status"){
+  else if(command === "status"){
     userCommands.CMD_Status(message);
   }
-
-  if(command === "pat"){
-    userCommands.CMD_Pat(message, args);
+  else if(command === "pat"){
+    userCommands.CMD_Honor(message, args, "pat");
+  }
+  else{
+    message.reply("sorry, I don't really understand you. `!help` will tell you more!");
   }
 
 });

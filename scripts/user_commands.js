@@ -1,10 +1,10 @@
 let serverControl = require('./db_controller.js');
 module.exports = {
 
-  honorsAndValues: {
+  honorTypesAndValues: {
     pat: 1,
     thank: 5,
-    colect: 20
+    collect: 20
   },
 
   ConnectDB: function(){
@@ -72,9 +72,18 @@ module.exports = {
     });
   },
 
-  CMD_Pat: function(message, args){
-    if(args.length != 1){
-      message.reply(" if you want to pat someone, use `!pat [target name]`");
+  CMD_Honor: function(message, args, type){
+    if(type == "honor"){
+      if(args.length != 2){
+        message.reply(" if you want to honor someone, use `!honor [target name] [amount]`");
+        return;
+      }
+    }
+    else if(!this.honorTypesAndValues.hasOwnProperty(type)){
+      throw "type not found.";
+    }
+    else if(args.length != 1){
+      message.reply(" if you want to " + type + " someone, use `!" + type + " [target name]`");
       return;
     }
 
@@ -84,12 +93,32 @@ module.exports = {
       }
       else{
         if(message.mentions.members.size != 0){
-          let discord_id = args[0].replace("<@", "");
-          discord_id = discord_id.replace(">", "");
-          discord_id = discord_id.replace("!", ""); // if user has username
-          serverControl.DoesUserExistInDB(discord_id, message.guild.id, targetExists =>{
+          var receiver_id = args[0].replace("<@", "");
+          receiver_id = receiver_id.replace(">", "");
+          receiver_id = receiver_id.replace("!", ""); // if user has username
+          serverControl.DoesUserExistInDB(receiver_id, message.guild.id, targetExists =>{
             if(targetExists === true){
-              serverControl.GiveHonorPoints(message.author.id, discord_id, message.guild.id, this.honorsAndValues["pat"]);
+              let amount = 0;
+              if(type === "honor"){
+                amount = args[1];
+              }
+              else{
+                amount = this.honorTypesAndValues[type]
+              }
+              serverControl.GiveHonorPoints(message.author.id, receiver_id, message.guild.id, amount, status =>{
+                if(status === "NotEnoughSparePoints"){
+                  message.reply("looks like you don't have enough spare points to give :/.\nYou can check your amount of spare points using `!status` command!");
+                }
+                else if(status === "GivingZeroPoints"){
+                  message.reply("uhm... Well, I could give hime those zero points, I guess...");
+                }
+                else if(status === "SenderIsReceiver"){
+                  message.reply("you are already the most honorable for me, you don't have to honor yourself <3");
+                }
+                else if(status === "OK"){
+                  message.channel.send(args[0] + ", you were honored for " + amount + " points!\nYou can always check your status with `!status`");
+                }
+              });
             }
             else{
               message.reply("looks like your friend does not exist...");
