@@ -92,44 +92,56 @@ module.exports = {
         message.reply("sorry, but I don't know anything about you yet... Let's be friends! `!join_h`");
       }
       else{
+        var receiver_id = "";
         if(message.mentions.members.size != 0){
-          var receiver_id = args[0].replace("<@", "");
+          receiver_id = args[0].replace("<@", "");
           receiver_id = receiver_id.replace(">", "");
-          receiver_id = receiver_id.replace("!", ""); // if user has username
-          if(receiver_id === message.author.id){
-            message.reply("you are already the most honorable for me, you don't have to honor yourself <3");
-            return;
-          }
-          serverControl.DoesUserExistInDB(receiver_id, message.guild.id, targetExists =>{
-            if(targetExists === true){
-              let amount = 0;
-              if(type === "honor"){
-                amount = args[1];
-              }
-              else{
-                amount = this.honorTypesAndValues[type]
-              }
-              if(amount === 0){
-                message.reply("uhm... Well, I could give hime those zero points, I guess...");
-                return;
-              }
-              serverControl.GiveHonorPoints(message.author.id, receiver_id, message.guild.id, amount, status =>{
-                if(status === "NotEnoughSparePoints"){
-                  message.reply("looks like you don't have enough spare points to give :/.\nYou can check your amount of spare points using `!status` command!");
-                }
-                else if(status === "OK"){
-                  message.channel.send(args[0] + ", you were honored for " + amount + " points!\nYou can always check your status with `!status`");
-                }
-              });
-            }
-            else{
-              message.reply("looks like your friend does not exist...");
-            }
-          });
+          receiver_id = receiver_id.replace("!", ""); // if user has username  
         }
         else{
-          //SELECT `name` FROM `users` WHERE `name` LIKE '%2%' 
+          for(var entry of message.guild.members.entries()){
+            if(entry[1].user.bot) { continue; }
+            if(entry[1].nickname != null && entry[1].nickname.toLowerCase().includes(args[0].toLowerCase())){
+              receiver_id = entry[0];
+              break;
+            }
+            if(entry[1].user.tag.toLowerCase().includes(args[0].toLowerCase()) ){
+              receiver_id = entry[0];
+              break;
+            }
+          }
         }
+
+        if(receiver_id === message.author.id){
+          message.reply("you are already the most honorable for me, you don't have to honor yourself <3");
+          return;
+        }
+        serverControl.DoesUserExistInDB(receiver_id, message.guild.id, targetExists =>{
+          if(targetExists === true){
+            let amount = 0;
+            if(type === "honor"){
+              amount = args[1];
+            }
+            else{
+              amount = this.honorTypesAndValues[type];
+            }
+            if(amount === 0){
+              message.reply("uhm... Well, I could give hime those zero points, I guess...");
+              return;
+            }
+            serverControl.GiveHonorPoints(message.author.id, receiver_id, message.guild.id, amount, status =>{
+              if(status === "NotEnoughSparePoints"){
+                message.reply("looks like you don't have enough spare points to give :/.\nYou can check your amount of spare points using `!status` command!");
+              }
+              else if(status === "OK"){
+                message.channel.send("<@" + receiver_id + ">, you were honored for " + amount + " points!\nYou can always check your status with `!status`");
+              }
+            });
+          }
+          else{
+            message.reply("looks like your friend does not exist...");
+          }
+        });
 
       }
     });
