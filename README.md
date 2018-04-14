@@ -54,5 +54,5 @@ Here are some details which might be interesting. Currently bot
 * Bot is written in [Discord.js](https://discord.js.org) and uses MySQL database
 * Q: What data is actually stored?</br>
   A: Database does not save any private information. All the information is accessible to user, server owner and Akeno developers.<br/>Database is created with this code: [/creating_db.sql file](https://github.com/tomzig16/akeno-js/blob/master/creating_db.sql). Here's a picture of tables and columns:
-  ![Data relations](https://media.discordapp.net/attachments/414415481672302602/430049575445725204/unknown.png)
+  ![Data relations](https://media.discordapp.net/attachments/414415481672302602/430049575445725204/unknown.png)<br/>
   Although, with new features and changes introduced in bot's functionality, this graph may and most likely will be changed later.
