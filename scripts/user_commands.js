@@ -112,6 +112,9 @@ module.exports = {
           }
         }
 
+        if(receiver_id == ""){
+          message.reply("looks like a person you entered does not exist in this server...\nThe most reliable way of honoring someone is by mentioning them ^.^");
+        }
         if(receiver_id === message.author.id){
           message.reply("you are already the most honorable for me, you don't have to honor yourself <3");
           return;
@@ -139,7 +142,7 @@ module.exports = {
             });
           }
           else{
-            message.reply("looks like your friend does not exist...");
+            message.reply("looks like your friend does not exist in my database...");
           }
         });
 
