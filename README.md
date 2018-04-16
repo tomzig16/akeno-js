@@ -14,7 +14,7 @@ System uses points, which are called "_honor points_" to rank each user. User ca
 
 Each user has three pools for honors: pats, thanks and honors - how many time user was honored and what type of honor, and one more pool of how many spare honors he can give to others. Only _pats_, _thanks_ and _honors_ are added when printing total number honor. These can not be used as _spare honors_ to spend in order to honor other people. Spare honors never mix into previously mentioned honors as well. 
 
-![Akeno responds to !status](https://i.imgur.com/fk2SabV.png)
+![Akeno responds to !status](https://media.discordapp.net/attachments/435533207371251737/435539135441403925/unknown.png)
 
 When user gives someone honor points those points are removed from sender's "_spare points_" pool and given to receiver's "_honor points_" pool.
 
@@ -54,6 +54,6 @@ Here are some details which might be interesting.
 * Bot is currently running on my raspberry pi and it is located in Easter Europe. Keep that in mind if you experience any latency.
 * Bot is written in [Discord.js](https://discord.js.org) and uses MySQL database
 * Q: What data is actually stored?</br>
-  A: Database does not save any private information. All the information is accessible to user, server owner and Akeno developers.<br/>Database is created with this code: [/creating_db.sql file](https://github.com/tomzig16/akeno-js/blob/master/creating_db.sql). Here's a picture of tables and columns:
+  A: Database does not save any private information. All the information is accessible to user, server owner and Akeno developers.<br/>Database is created with this code: [/creating_db.ddl file](https://github.com/tomzig16/akeno-js/blob/master/creating_db.sql). Here's a picture of tables and columns:
   ![Data relations](https://media.discordapp.net/attachments/435533207371251737/435533221795463169/unknown.png)<br/>
   Although, with new features and changes introduced in bot's functionality, this graph may and most likely will be changed later.
