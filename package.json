@@ -1,6 +1,6 @@
 {
   "name": "lord-sebas",
-  "version": "0.2.0",
+  "version": "0.2.5",
   "description": "Lord Sebas discord bot",
   "main": "index.js",
   "scripts": {
