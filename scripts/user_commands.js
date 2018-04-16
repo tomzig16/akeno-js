@@ -131,7 +131,6 @@ module.exports = {
         serverControl.DoesUserExistInDB(receiver_id, message.guild.id, targetExists =>{
           if(targetExists === true){
             let amount = 0;
-            let honorTypeColumn = type + "s";
             if(type === "honor"){
               amount = args[1];
             }
@@ -142,7 +141,7 @@ module.exports = {
               message.reply("uhm... Well, I could give hime those zero points, I guess...");
               return;
             }
-            serverControl.GiveHonorPoints(message.author.id, receiver_id, message.guild.id, honorTypeColumn, amount, status =>{
+            serverControl.GiveHonorPoints(message.author.id, receiver_id, message.guild.id, type, amount, status =>{
               if(status === "NotEnoughSparePoints"){
                 message.reply("looks like you don't have enough spare points to give :/.\nYou can check your amount of spare points using `!status` command!");
               }

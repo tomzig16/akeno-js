@@ -114,7 +114,8 @@ module.exports = {
           statusCallback("NotEnoughSparePoints");
         }
         else{
-          var sqlGivePoints = "UPDATE `user_stats` SET `" + htype + "` = " + (receiverStats.honored + parseInt(amount)) + " WHERE `user_stats`.`id` = " + receiverStats.id + ";"; 
+          let honorTypeColumn = htype + "s";
+          var sqlGivePoints = "UPDATE `user_stats` SET `" + honorTypeColumn + "` = " + (receiverStats[honorTypeColumn] + parseInt(amount)) + " WHERE `user_stats`.`id` = " + receiverStats.id + ";"; 
           var sqlTakePoints = "UPDATE `user_stats` SET `spare_honors` = " + (senderStats.spare_honors - parseInt(amount)) + " WHERE `user_stats`.`id` = " + senderStats.id + ";";
           dbConnection.query(sqlGivePoints, function (err, result) {
             if (err) throw err;
