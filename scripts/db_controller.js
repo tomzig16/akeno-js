@@ -89,7 +89,7 @@ module.exports = {
   },
 
   GetUserStats: function(userID, serverID, ResultsCallback){
-    var sql = "SELECT `user_stats`.`id`, `user_stats`.`honored`, `user_stats`.`spare_honors` " + 
+    var sql = "SELECT `user_stats`.`id`, `user_stats`.`pats`, `user_stats`.`thanks`, `user_stats`.`honors`, `user_stats`.`spare_honors` " + 
               "FROM `users`, `servers`, `user_stats` " +
               "WHERE `servers`.`dscr_id` = " + serverID + " " +
               "AND `users`.`server_fk` = `servers`.`id` " + 
@@ -106,7 +106,7 @@ module.exports = {
     });
   },
 
-  GiveHonorPoints: function(senderID, receiverID, serverID, amount, statusCallback){
+  GiveHonorPoints: function(senderID, receiverID, serverID, htype, amount, statusCallback){
     this.GetUserStats(senderID, serverID, senderStats =>{
       this.GetUserStats(receiverID, serverID, receiverStats =>{
         // at this point, both stats should exist.
@@ -114,7 +114,8 @@ module.exports = {
           statusCallback("NotEnoughSparePoints");
         }
         else{
-          var sqlGivePoints = "UPDATE `user_stats` SET `honored` = " + (receiverStats.honored + parseInt(amount)) + " WHERE `user_stats`.`id` = " + receiverStats.id + ";"; 
+          let honorTypeColumn = htype + "s";
+          var sqlGivePoints = "UPDATE `user_stats` SET `" + honorTypeColumn + "` = " + (receiverStats[honorTypeColumn] + parseInt(amount)) + " WHERE `user_stats`.`id` = " + receiverStats.id + ";"; 
           var sqlTakePoints = "UPDATE `user_stats` SET `spare_honors` = " + (senderStats.spare_honors - parseInt(amount)) + " WHERE `user_stats`.`id` = " + senderStats.id + ";";
           dbConnection.query(sqlGivePoints, function (err, result) {
             if (err) throw err;
@@ -208,8 +209,8 @@ function AddUserToDB(userID, serverID){
 }
 
 function AddUserStatsRow(userFK){
-  var sqlInsertUStats = "INSERT INTO `user_stats` (`id`, `user_fk`, `honored`, `spare_honors`) " +
-  "VALUES (NULL, '" + userFK + "', '0', '15');";
+  var sqlInsertUStats = "INSERT INTO `user_stats` (`id`, `user_fk`, `pats`, `thanks`, `honors`, `spare_honors`) " +
+  "VALUES (NULL, '" + userFK + "',  DEFAULT, DEFAULT, DEFAULT, DEFAULT);";
   dbConnection.query(sqlInsertUStats, function (err_ins_ustats, result_ins_ustats) {
     if (err_ins_ustats) throw err_ins_ustats;
   });

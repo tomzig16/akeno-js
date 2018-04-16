@@ -62,8 +62,12 @@ module.exports = {
                 console.log("Failed reading user's stats. User dscr_id: " + message.author.id);
               }
               else{
-                message.reply("gotcha! Let's see...\nHere's what I remember - " +
-                "You were honored " + results.honored + " times and now you can honor someone for up to " + results.spare_honors + " honor points.");
+                var totalHonors = parseInt(results.pats) + parseInt(results.thanks) + parseInt(results.honors);
+                message.reply("gotcha! Let's see...Here are your stats:\n" +
+                "`" + results.pats + "` people have patted you so far (some of them might have done that multiple times, so cute!)\n" +
+                "`" + results.thanks + "` people said \"thank you!\"\n" +
+                "You have `" + results.honors + "` honors for great deeds o7\n" +
+                "In total you have earned `" + totalHonors + " honor points` and now you can honor someone for up to `" + results.spare_honors + "` honor points.");
               }
             });
           }
@@ -137,7 +141,7 @@ module.exports = {
               message.reply("uhm... Well, I could give hime those zero points, I guess...");
               return;
             }
-            serverControl.GiveHonorPoints(message.author.id, receiver_id, message.guild.id, amount, status =>{
+            serverControl.GiveHonorPoints(message.author.id, receiver_id, message.guild.id, type, amount, status =>{
               if(status === "NotEnoughSparePoints"){
                 message.reply("looks like you don't have enough spare points to give :/.\nYou can check your amount of spare points using `!status` command!");
               }

@@ -28,7 +28,9 @@ CREATE TABLE `akeno_debug`.`server_conf`(
 CREATE TABLE `akeno_debug`.`user_stats`(
     `id` INT(5) NOT NULL AUTO_INCREMENT,
     `user_fk` INT(5) NOT NULL,
-    `honored` INT(32) NOT NULL DEFAULT '0',
+    `pats` INT(5) NOT NULL DEFAULT '0',
+    `thanks` INT(5) NOT NULL DEFAULT '0',
+    `honors` INT(5) NOT NULL DEFAULT '0',
     `spare_honors` INT(32) NOT NULL DEFAULT '15',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
@@ -42,7 +44,7 @@ ALTER TABLE `akeno_debug`.`user_stats` ADD FOREIGN KEY (`user_fk`) REFERENCES `a
 INSERT INTO `akeno_debug`.`server_conf` (`id`, `admin_role`) VALUES (NULL, 'AkenoDev');
 INSERT INTO `akeno_debug`.`servers` (`id`, `dscr_id`, `admin_fk`, `server_conf_fk`) VALUES (NULL, '414414057060433920', NULL, '1');
 INSERT INTO `akeno_debug`.`users` (`id`, `name`, `dscr_id`, `server_fk`) VALUES (NULL, 'Akeno', '429672169203695616', '1');
-INSERT INTO `akeno_debug`.`user_stats` (`id`, `user_fk`, `honored`, `spare_honors`) VALUES (NULL, '1', '0', '15');
+INSERT INTO `akeno_debug`.`user_stats` (`id`, `user_fk`, `pats`, `thanks`, `honors`, `spare_honors`) VALUES (NULL, '1', DEFAULT, DEFAULT, DEFAULT, DEFAULT);
 /*After inserting all rows, update server admin_fk*/
 UPDATE `akeno_debug`.`servers` SET `admin_fk` = '1' WHERE `akeno_debug`.`servers`.`id` = 1 
 

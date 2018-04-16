@@ -12,13 +12,13 @@ At this very moment Akeno keeps ranking of the server members. If you invite bot
 
 System uses points, which are called "_honor points_" to rank each user. User can get honor points only from other users. If user wants to honor any server member he can do it with several commands (watch commands section). **Both, sender and receiver, must be registered in the database**. I decided not to force anyone and not to save any data without anyone's aknowledgement, so **each member in order to honor or be honored has to join the system manually, by typing** `!join_h` **command**. 
 
-Each user has two pools of honors: how many time user was honored and how many spare honors he can give to others. These are two different pools and they never mix. 
+Each user has three pools for honors: pats, thanks and honors - how many time user was honored and what type of honor, and one more pool of how many spare honors he can give to others. Only _pats_, _thanks_ and _honors_ are added when printing total number honor. These can not be used as _spare honors_ to spend in order to honor other people. Spare honors never mix into previously mentioned honors as well. 
 
-![Akeno responds to !status](https://i.imgur.com/fk2SabV.png)
+![Akeno responds to !status](https://media.discordapp.net/attachments/435533207371251737/435539135441403925/unknown.png)
 
 When user gives someone honor points those points are removed from sender's "_spare points_" pool and given to receiver's "_honor points_" pool.
 
-[This is not implemented yet] <br/>User can add spare points to share on daily basis by typing `!collect` command. This is not implemented yet.
+User can add spare points to share on daily basis by typing `!collect` command.
 
 ### Future
 
@@ -39,6 +39,7 @@ All honoring commands accept both - mention (`!pat @The Sith#4143`) and name str
 * `!pat [user]` -  gives _[user]_ **1** honor point
 * `!thank [user]` - gives _[user]_ **5** honor points
 * `!honor [user] [amount]` - gives _[user]_ certain _[amount]_ of points
+* `!collect` - get _spare honor points_ which are used for honoring others 
 
 ### Misc
 
@@ -53,6 +54,6 @@ Here are some details which might be interesting.
 * Bot is currently running on my raspberry pi and it is located in Easter Europe. Keep that in mind if you experience any latency.
 * Bot is written in [Discord.js](https://discord.js.org) and uses MySQL database
 * Q: What data is actually stored?</br>
-  A: Database does not save any private information. All the information is accessible to user, server owner and Akeno developers.<br/>Database is created with this code: [/creating_db.sql file](https://github.com/tomzig16/akeno-js/blob/master/creating_db.sql). Here's a picture of tables and columns:
-  ![Data relations](https://media.discordapp.net/attachments/414415481672302602/434830758251593728/unknown.png)<br/>
+  A: Database does not save any private information. All the information is accessible to user, server owner and Akeno developers.<br/>Database is created with this code: [/creating_db.ddl file](https://github.com/tomzig16/akeno-js/blob/master/creating_db.sql). Here's a picture of tables and columns:
+  ![Data relations](https://media.discordapp.net/attachments/435533207371251737/435533221795463169/unknown.png)<br/>
   Although, with new features and changes introduced in bot's functionality, this graph may and most likely will be changed later.
