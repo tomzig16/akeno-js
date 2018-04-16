@@ -75,11 +75,11 @@ module.exports = {
   CMD_Honor: function(message, args, type){
     if(type == "honor"){
       if(args.length != 2){
-        message.reply(" if you want to honor someone, use `!honor [target name] [amount]`");
+        message.reply("if you want to honor someone, use `!honor [target name] [amount]`");
         return;
       }
       if(isNaN(args[1]) || parseInt(args[1]) < 0){
-        message.reply(" what?... Please, tell me a valid number >_>");
+        message.reply("what?... Please, tell me a valid number >_>");
         return;
       }
     }
@@ -153,6 +153,19 @@ module.exports = {
 
       }
     });
-  }
+  },
 
+  CMD_Collect: function(message){
+    serverControl.DoesUserExistInDB(message.author.id, message.guild.id, exists =>{
+      if(exists === false){
+        message.reply("seems like I don't know anything about you :c. Join our team - `!join_h`!");
+      }
+      else{
+        // Currently for test purposes I do not restrict how often can user write this command
+        // TODO: add timer when done debugging
+        serverControl.GiveSparePoints(message.author.id, message.guild.id, this.honorTypesAndValues.collect);
+        message.channel.send("Yay! I have added some points (" + this.honorTypesAndValues.collect + ") into your account, <@" + message.author.id + "> ;)")
+      }
+    });
+  }
 };

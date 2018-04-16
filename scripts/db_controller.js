@@ -128,6 +128,16 @@ module.exports = {
       });
     });
   },
+
+  GiveSparePoints: function(receiverID, serverID, amount){
+    this.GetUserStats(receiverID, serverID, receiverStats =>{
+      var sqlGivePoints = "UPDATE `user_stats` SET `spare_honors` = " + (receiverStats.spare_honors + parseInt(amount)) + " WHERE `user_stats`.`id` = " + receiverStats.id + ";";
+      dbConnection.query(sqlGivePoints, function (err, result) {
+        if (err) throw err;
+      });
+      console.log(receiverID + " has collected points");
+    });
+  }
   
 };
 

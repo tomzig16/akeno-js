@@ -32,6 +32,9 @@ client.on("message", async message => {
   else if(command === "status"){
     userCommands.CMD_Status(message);
   }
+  else if(command === "collect"){
+    userCommands.CMD_Collect(message);
+  }
   else if(command === "pat"){
     userCommands.CMD_Honor(message, args, "pat");
   }
@@ -41,9 +44,11 @@ client.on("message", async message => {
   else if(command === "honor"){
     userCommands.CMD_Honor(message, args, "honor");
   }
-  else{
+  // Decided to ignore any unknown command
+  // in case people are trying to call another bot
+  /*else{
     message.reply("sorry, I don't really understand you. `!help` will tell you more!");
-  }
+  }*/
 
 });
 
