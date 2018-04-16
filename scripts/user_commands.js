@@ -78,6 +78,10 @@ module.exports = {
         message.reply(" if you want to honor someone, use `!honor [target name] [amount]`");
         return;
       }
+      if(isNaN(args[1]) || parseInt(args[1]) < 0){
+        message.reply(" what?... Please, tell me a valid number >_>");
+        return;
+      }
     }
     else if(!this.honorTypesAndValues.hasOwnProperty(type)){
       throw "type not found.";
