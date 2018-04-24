@@ -57,8 +57,9 @@ client.on("guildCreate", guild => {
   console.log("New guild joined");
 });
 
+
 client.on("guildDelete", guild => {
   console.log("Removed from a guild");
 });
 
-
+client.on("error", (error) => console.error(error));

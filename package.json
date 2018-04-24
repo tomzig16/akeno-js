@@ -1,21 +1,21 @@
 {
-  "name": "lord-sebas",
+  "name": "akeno-js",
   "version": "0.2.5",
-  "description": "Lord Sebas discord bot",
+  "description": "Akeno discord bot",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tomzig16/lord-sebas-js.git"
+    "url": "git+https://github.com/tomzig16/akeno-js.git"
   },
   "author": "TheSith",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/tomzig16/lord-sebas-js/issues"
+    "url": "https://github.com/tomzig16/akeno-js/issues"
   },
-  "homepage": "https://github.com/tomzig16/lord-sebas-js#readme",
+  "homepage": "https://github.com/tomzig16/akeno-js#readme",
   "dependencies": {
     "discord.js": "^11.3.2",
     "dotenv": "^5.0.1",
