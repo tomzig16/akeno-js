@@ -11,20 +11,11 @@ dbConnection = mysql.createPool({
 
 module.exports = {
 
-
-
   // MySQL keeps disconnecting if it is inactive for a period of time,
   // In order to avoid that, this function will be pinging it each hour or so
   StartServerPokingRoutine: function(){
     PokeServer();
   }, 
-
-  dbConnect: function(){
-   // dbConnection.connect(function(err) {
-   //   if (err) throw err;
-      console.log("Connected to database!");
-   // });
-  },
 
   AddServer: function(server, ResultCallback){
     var sql = "SELECT * FROM `servers` WHERE `dscr_id` = " + server.id;

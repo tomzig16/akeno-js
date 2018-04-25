@@ -7,27 +7,6 @@ module.exports = {
     collect: 20
   },
 
-  ConnectDB: function(){
-    serverControl.dbConnect();
-    serverControl.StartServerPokingRoutine();
-  },
-
-  CMD_AddServer: function(message){
-    if(message.author.id === message.guild.ownerID){
-      serverControl.AddServer(message.guild, function(result){
-        if(result === true){
-          message.reply("good news! Server was added to my database, and your user was created as well!");
-        }
-        else{
-          message.reply("looks like this server already exists in my database!");
-        }
-      });
-    }
-    else{
-      return message.reply("Sorry, you don't have permission to do that.");
-    }
-  },
-
   CMD_JoinH: function(message){
     serverControl.AddUser(message.guild.id, message.author.id, function(result){
       if(result === "User already exists"){

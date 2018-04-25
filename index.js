@@ -1,5 +1,8 @@
-var userCommands = require('./scripts/user_commands.js');
+let serverControl = require('./scripts/db_controller.js');
 const Discord = require('discord.js');
+
+var honoringSystem = require('./scripts/honoring_system.js');
+var guildControls = require('./scripts/guild_controls.js');
 
 const prefix = "!";
 
@@ -11,7 +14,8 @@ client.login(token);
 
 client.on('ready', function() {
   console.log('Bot has been started');
-  userCommands.ConnectDB();
+  serverControl.StartServerPokingRoutine();
+  console.log("Database started.");
 });
 
 
@@ -24,25 +28,25 @@ client.on("message", async message => {
   const command = args.shift().toLowerCase();
 
   if (command === "addserver") {
-    userCommands.CMD_AddServer(message);
+    guildControls.CMD_AddServer(message);
   }
   else if(command === "join_h"){
-    userCommands.CMD_JoinH(message);
+    honoringSystem.CMD_JoinH(message);
   }
   else if(command === "status"){
-    userCommands.CMD_Status(message);
+    honoringSystem.CMD_Status(message);
   }
   else if(command === "collect"){
-    userCommands.CMD_Collect(message);
+    honoringSystem.CMD_Collect(message);
   }
   else if(command === "pat"){
-    userCommands.CMD_Honor(message, args, "pat");
+    honoringSystem.CMD_Honor(message, args, "pat");
   }
   else if(command === "thank"){
-    userCommands.CMD_Honor(message, args, "thank");
+    honoringSystem.CMD_Honor(message, args, "thank");
   }
   else if(command === "honor"){
-    userCommands.CMD_Honor(message, args, "honor");
+    honoringSystem.CMD_Honor(message, args, "honor");
   }
   // Decided to ignore any unknown command
   // in case people are trying to call another bot
