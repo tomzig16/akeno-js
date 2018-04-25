@@ -1,7 +1,8 @@
 require('dotenv').config();
 let mysql = require('mysql');
 
-dbConnection = mysql.createConnection({
+dbConnection = mysql.createPool({
+  connectionLimit: 5,
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
@@ -19,10 +20,10 @@ module.exports = {
   }, 
 
   dbConnect: function(){
-    dbConnection.connect(function(err) {
-      if (err) throw err;
+   // dbConnection.connect(function(err) {
+   //   if (err) throw err;
       console.log("Connected to database!");
-    });
+   // });
   },
 
   AddServer: function(server, ResultCallback){
