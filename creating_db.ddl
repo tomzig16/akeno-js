@@ -46,7 +46,7 @@ INSERT INTO `akeno_debug`.`servers` (`id`, `dscr_id`, `admin_fk`, `server_conf_f
 INSERT INTO `akeno_debug`.`users` (`id`, `name`, `dscr_id`, `server_fk`) VALUES (NULL, 'Akeno', '429672169203695616', '1');
 INSERT INTO `akeno_debug`.`user_stats` (`id`, `user_fk`, `pats`, `thanks`, `honors`, `spare_honors`) VALUES (NULL, '1', DEFAULT, DEFAULT, DEFAULT, DEFAULT);
 /* After inserting all rows, update server admin_fk */
-UPDATE `akeno_debug`.`servers` SET `admin_fk` = '1' WHERE `akeno_debug`.`servers`.`id` = 1 
+UPDATE `akeno_debug`.`servers` SET `admin_fk` = '1' WHERE `akeno_debug`.`servers`.`id` = 1;
 
 
 /* Image storing */

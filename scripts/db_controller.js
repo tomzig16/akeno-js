@@ -130,6 +130,18 @@ module.exports = {
       });
       console.log(receiverID + " has collected points");
     });
+  },
+
+
+  // Image management
+  InsertNewImage: function(serverID, title, url, statusCallback){
+    this.GetServerFK(serverID, serverFK => {
+      if(serverFK < 0){
+        statusCallback("Server not found");
+      }
+      
+      statusCallback(200);
+    });
   }
   
 };
