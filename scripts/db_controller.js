@@ -9,6 +9,8 @@ dbConnection = mysql.createPool({
   database: process.env.DB_NAME
 }),
 
+console.log("poke");
+
 module.exports = {
 
   // MySQL keeps disconnecting if it is inactive for a period of time,
@@ -134,12 +136,19 @@ module.exports = {
 
 
   // Image management
+
   InsertNewImage: function(serverID, title, url, statusCallback){
     this.GetServerFK(serverID, serverFK => {
       if(serverFK < 0){
         statusCallback("Server not found");
+        return;
       }
-      
+      var sqlInsertImage =  "INSERT INTO `images` (`id`, `server_fk`, `name`, `url`) VALUES "+
+      "(NULL, '" + serverFK + "', '" + title + "', '" + url + "');";
+      dbConnection.query(sqlInsertImage, function (error, result) {
+        if (error) throw error;
+          console.log("New image was added to images table.");
+      });
       statusCallback(200);
     });
   }
