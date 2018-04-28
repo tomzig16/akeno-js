@@ -9,8 +9,6 @@ dbConnection = mysql.createPool({
   database: process.env.DB_NAME
 }),
 
-console.log("poke");
-
 module.exports = {
 
   // MySQL keeps disconnecting if it is inactive for a period of time,

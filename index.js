@@ -3,7 +3,7 @@ const Discord = require('discord.js');
 
 var honoringSystem = require('./scripts/honoring_system.js');
 var guildControls = require('./scripts/guild_controls.js');
-var imageSystem = require('./scripts/images.js');
+var imageSystem = require('./scripts/image_system.js');
 
 const prefix = "!";
 
