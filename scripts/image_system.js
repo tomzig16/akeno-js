@@ -18,16 +18,31 @@ module.exports = {
     // Add !image args[0] commands here
     if(args[0] === "add"){
       if(args.length < 3){
-        message.reply("sorry, you are missing something. Please peek inside `!image add help`");
+        message.reply("sorry, you are missing something. Please, peek inside `!image add help`");
         return;
       }
-      if(!IsURLSupported(args[args.length - 1])){
+      let imageLink = args[args.length - 1];
+      if(!IsURLSupported(imageLink)){
         message.reply("looks like last argument was not a link to image.\n" + 
         "**Make sure that link is the last argument and it ends with supported format**" +
         "(for example `https://i.imgur.com/Di3z1Mc.gif`) you can always consult !image add help ;) ");
         return;
       }
-      
+      let imageTitle = "";
+      for(var i = 1; i < args.length - 2; i++){
+        imageTitle += args[i] + " ";
+      }
+      serverControl.InsertNewImage(message.guild.id, imageTitle.trim(), imageLink, status => {
+        if(status === "Server not found"){
+          message.reply("sorry, seems like I don't know anything about this server...");
+          return;
+        }
+        if(status === "Duplicate"){
+          message.reply("looks like image with the same title already exists.");
+          return;
+        }
+        // if(status == 200) ...
+      });
     }
     // If none of given commands founds it will search for the image.
     else {
