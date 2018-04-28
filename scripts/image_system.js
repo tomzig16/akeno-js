@@ -1,5 +1,6 @@
 let serverControl = require('./db_controller.js');
 var supportedFormats = ["png", "jpg", "jpeg", "gif", "webm"];
+var prefixes = ["www", "http://", "https://"];
 
 module.exports = {
 
@@ -61,7 +62,7 @@ function ImageHelp(type){
     helpMessage += "Command format: `!image add [title] [image url]`\n";
     helpMessage += "I expect you to write direct image URL (should finish with ";
     for(var i = 0; i < supportedFormats.length; i++){
-      helpMessage += supportedFormats[i] + " ";
+      helpMessage += "`\"" + supportedFormats[i] + "\"` ";
     }
     helpMessage += ") as last parameter so I can parse as long and as many words containing title as you wish 😊\n";
     helpMessage += "If you think that you made a mistake, you can always remove your image (`!image remove help`) and add a new one!\n";
@@ -98,9 +99,20 @@ function GenerateEmbedMessage(message, imageURL, title){
 
 function IsURLSupported(lastArgument){
   var splittedArgument = lastArgument.split(".");
+  let containsFormat = false;
   for(var i = 0; i < supportedFormats.length; i++){
-    if(lastArgument.includes(supportedFormats[i])){
+    if(splittedArgument[splittedArgument.length - 1] === supportedFormats[i]){
+      containsFormat = true;
+      break;
+    }
+  }
+  if(containsFormat === false){
+    return false;
+  }
+  for(var i = 0; i < prefixes.length; i++){
+    if(splittedArgument[0].includes(prefixes[i])){
       return true;
     }
   }
+  return false;
 }
