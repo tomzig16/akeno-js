@@ -16,22 +16,23 @@ module.exports = {
       
     }
     else if(args[0] === "show"){
-      let testingImageURL = "https://i.imgur.com/Di3z1Mc.gif";
+      let embedColor = 10070709;
+      if(message.guild.me.displayColor !== 0){
+        embedColor = message.guild.me.displayColor;
+      }
+      let testingImageURL = "https://media.discordapp.net/attachments/437577764795842560/439757269975040000/TatteredLeadingGalah-size_restricted.gif";
       message.channel.send({
-        content: "*posted by " + message.author.username + "*",
         embed: {
-          color: message.guild.me.displayColor,
+          color: embedColor,
           author: {
-            name: message.client.user.username,
-            icon_url: message.client.avatarURL
+            name: message.author.username,
+            icon_url: message.author.avatarURL
           },
           title: "writtenCommandHere",
-          url: testingImageURL,
           image: {
             url: testingImageURL,
-          },
-          thumbnail: {
-            url: message.author.avatarURL
+            height: 720,
+            width: 1280
           }
         }
       });
