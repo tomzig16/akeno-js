@@ -54,8 +54,8 @@ UPDATE `akeno_debug`.`servers` SET `admin_fk` = '1' WHERE `akeno_debug`.`servers
 CREATE TABLE `akeno_debug`.`images`(
     `id` INT(5) NOT NULL AUTO_INCREMENT,
     `server_fk` INT(5) NOT NULL,
-    `author_id` INT(5) NOT NULL,
-    `name` VARCHAR(32) NOT NULL,
+    `author_id` VARCHAR(64) NOT NULL,
+    `title` VARCHAR(32) NOT NULL,
     `url` VARCHAR(255) NOT NULL,
     `is_global` TINYINT(1) NOT NULL DEFAULT '0',
     PRIMARY KEY (`id`)

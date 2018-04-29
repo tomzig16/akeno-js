@@ -30,19 +30,24 @@ module.exports = {
         return;
       }
       let imageTitle = "";
-      for(var i = 1; i < args.length - 2; i++){
+      for(var i = 1; i < args.length - 1; i++){
         imageTitle += args[i] + " ";
       }
-      serverControl.InsertNewImage(message.guild.id, imageTitle.trim(), imageLink, status => {
+      if(imageTitle.length > 32){
+        message.reply("oops, title is too long. Please try to stick to 32 symbols long titles ^^");
+        return;
+      }
+      serverControl.InsertNewImage(message.guild.id, message.author.id, imageTitle.trim(), imageLink, status => {
         if(status === "Server not found"){
           message.reply("sorry, seems like I don't know anything about this server...");
-          return;
         }
         if(status === "Duplicate"){
           message.reply("looks like image with the same title already exists.");
-          return;
         }
-        // if(status == 200) ...
+        if(status == 200){
+          message.reply("good news! I have successfully added this image to my database!\n" +
+          "Now you can post it whenever you like with `!image " + imageTitle.trim() + "` command 😊")
+        }
       });
     }
     // If none of given commands founds it will search for the image.
