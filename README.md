@@ -52,6 +52,8 @@ All honoring commands accept both - mention (`!pat @The Sith#4143`) and name str
 
 Akeno hosts images. Your server still has to be inserted to the database as images are not shared across servers (although, there are few global images)
 
+![image example](https://media.discordapp.net/attachments/430073596698820638/440165185714520064/unknown.png)
+
 ### Usage
 
 It is very early state of this command so users currently can add images and request images:
