@@ -7,12 +7,18 @@ module.exports = {
 
 
   ParseParameters: function(message, args){
+    for(var i = 0; i < args.length; i++){
+      args[i] = args[i].replace("\"", "");
+      args[i] = args[i].replace("'", "");
+      args[i] = args[i].replace("`", "");
+    }
+
     if(args.length < 1 || args[0] === "help"){
       message.reply(ImageHelp("help"));
       return;
     }
     // Print help for each command
-    if(args.length === 1 || (args.length >= 2 && args[1] === "help")){
+    if(args.length >= 2 && args[1] === "help"){
       message.reply(ImageHelp(args[0]));
       return;
     }
@@ -60,7 +66,22 @@ module.exports = {
     }
     // If none of given commands founds it will search for the image.
     else {
-      
+      let title = "";
+      for(var i = 0; i < args.length; i++){
+        title += args[i] + " ";
+      }
+      serverControl.GetImageURL(message.guild.id, title.trim(), result =>{
+        if(result === "Server not found"){
+          message.reply("sorry, seems like I don't know anything about this server...");
+        }
+        else if(result == null){
+          message.reply("looks like image title you entered does not exist in my database.");
+        }
+        else {
+          let embedMessage = GenerateEmbedMessage(message, result.url, title.trim());
+          message.reply(embedMessage);
+        }
+      });
     }
   }
 }
@@ -108,6 +129,7 @@ function GenerateEmbedMessage(message, imageURL, title){
         }
     }
   };
+  return embedMessage;
 }
 
 function IsURLSupported(lastArgument){

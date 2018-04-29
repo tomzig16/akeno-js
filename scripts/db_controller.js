@@ -157,8 +157,41 @@ module.exports = {
         });
       }
     });
-  }
+  },
   
+  GetImageURL: function(serverID, title, resultCallback){
+    this.GetServerFK(serverID, serverFK => {
+      if(serverFK < 0){
+        resultCallback("Server not found");
+      }
+      else {
+        var sql = "SELECT `images`.`url` FROM `images` " +
+        "WHERE `images`.`server_fk` = '" + serverFK + "' AND `images`.`title` LIKE '%" + title + "%'";
+        dbConnection.query(sql, function (err, result, fields) {
+          if (err) throw err;
+          if(result != ""){
+            resultCallback(result[0]);
+          }
+          else{
+            var sql = "SELECT `images`.`url` FROM `images`" +
+            "WHERE `images`.`title` LIKE '%" + title + "%' AND `images`.`is_global` = 1";
+            dbConnection.query(sql, function (err, result, fields) {
+              if (err) throw err;
+              if(result != ""){
+                resultCallback(result[0]);
+              }
+              else{
+                resultCallback(null);
+              }
+            });
+          }
+        });
+      }
+    });
+  }
+
+
+
 };
 
 
