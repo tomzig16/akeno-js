@@ -48,6 +48,21 @@ All honoring commands accept both - mention (`!pat @The Sith#4143`) and name str
 
 #
 
+## Image system
+
+Akeno hosts images. Your server still has to be inserted to the database as images are not shared across servers (although, there are few global images)
+
+### Usage
+
+It is very early state of this command so users currently can add images and request images:
+
+* `!image add [title] [url]` - adds image to database. Title can contain more than one word (up to **32** symbols **per title**) and could not be duplicate. URL must end with supported format (`png`, `.jpg`, `.jpeg`, `.gif` or `.webm`)
+* `!image [title]` - posts first found image which cointains given [title] substring in title, which was added to database with
+
+*There will be more commands, planned lists and removing images. Although, there's thought to limit how many images can a single user add to the database*
+
+#
+
 ## Other questions and info
 
 Here are some details which might be interesting. 
@@ -55,5 +70,5 @@ Here are some details which might be interesting.
 * Bot is written in [Discord.js](https://discord.js.org) and uses MySQL database
 * Q: What data is actually stored?</br>
   A: Database does not save any private information. All the information is accessible to user, server owner and Akeno developers.<br/>Database is created with this code: [/creating_db.ddl file](https://github.com/tomzig16/akeno-js/blob/master/creating_db.ddl). Here's a picture of tables and columns:
-  ![Data relations](https://media.discordapp.net/attachments/435533207371251737/435533221795463169/unknown.png)<br/>
+  ![Data relations](https://media.discordapp.net/attachments/430073596698820638/440161802467278848/unknown.png)<br/>
   Although, with new features and changes introduced in bot's functionality, this graph may and most likely will be changed later.
