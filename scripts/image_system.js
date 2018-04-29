@@ -30,6 +30,14 @@ module.exports = {
         return;
       }
       let imageTitle = "";
+      // In order to avoid problems check that title should not start with a name of an existing command
+      let existingCommands = ["add", "help", "remove", "list"];
+      for(var i = 0; i < existingCommands.length; i++){
+        if(args[1] === existingCommands[i]){
+          message.reply("sorry, image title can not start with the same keyword as an existing command, that will confuse me 😖");
+          return;
+        }
+      }
       for(var i = 1; i < args.length - 1; i++){
         imageTitle += args[i] + " ";
       }
