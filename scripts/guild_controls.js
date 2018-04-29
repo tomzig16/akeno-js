@@ -14,7 +14,6 @@ module.exports = {
     else{
       return message.reply("Sorry, you don't have permission to do that.");
     }
-  },
-
+  }
 
 };

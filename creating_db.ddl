@@ -45,6 +45,20 @@ INSERT INTO `akeno_debug`.`server_conf` (`id`, `admin_role`) VALUES (NULL, 'Aken
 INSERT INTO `akeno_debug`.`servers` (`id`, `dscr_id`, `admin_fk`, `server_conf_fk`) VALUES (NULL, '414414057060433920', NULL, '1');
 INSERT INTO `akeno_debug`.`users` (`id`, `name`, `dscr_id`, `server_fk`) VALUES (NULL, 'Akeno', '429672169203695616', '1');
 INSERT INTO `akeno_debug`.`user_stats` (`id`, `user_fk`, `pats`, `thanks`, `honors`, `spare_honors`) VALUES (NULL, '1', DEFAULT, DEFAULT, DEFAULT, DEFAULT);
-/*After inserting all rows, update server admin_fk*/
-UPDATE `akeno_debug`.`servers` SET `admin_fk` = '1' WHERE `akeno_debug`.`servers`.`id` = 1 
+/* After inserting all rows, update server admin_fk */
+UPDATE `akeno_debug`.`servers` SET `admin_fk` = '1' WHERE `akeno_debug`.`servers`.`id` = 1;
 
+
+/* Image storing */
+
+CREATE TABLE `akeno_debug`.`images`(
+    `id` INT(5) NOT NULL AUTO_INCREMENT,
+    `server_fk` INT(5) NOT NULL,
+    `author_id` VARCHAR(64) NOT NULL,
+    `title` VARCHAR(32) NOT NULL,
+    `url` VARCHAR(255) NOT NULL,
+    `is_global` TINYINT(1) NOT NULL DEFAULT '0',
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB;
+
+ALTER TABLE `akeno_debug`.`images` ADD FOREIGN KEY (`server_fk`) REFERENCES `akeno_debug`.`servers`(`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;

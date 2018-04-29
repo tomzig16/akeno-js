@@ -130,8 +130,68 @@ module.exports = {
       });
       console.log(receiverID + " has collected points");
     });
-  }
+  },
+
+
+  // Image management
+
+  InsertNewImage: function(serverID, authorID, title, url, statusCallback){
+    this.GetServerFK(serverID, serverFK => {
+      if(serverFK < 0){
+        statusCallback("Server not found");
+      }
+      else {
+        DoesTitleAlreadyExist(serverID, title, status => {
+          if(status === true){
+            statusCallback("Duplicate");
+          }
+          else{
+            var sqlInsertImage =  "INSERT INTO `images` (`id`, `server_fk`, `author_id`, `title`, `url`, `is_global`)  VALUES "+
+            "(NULL, '" + serverFK + "', '" + authorID + "', '" + title + "', '" + url + "', '0');";
+            dbConnection.query(sqlInsertImage, function (error, result) {
+              if (error) throw error;
+                console.log("New image was added to images table.");
+            });
+            statusCallback(200);
+          }
+        });
+      }
+    });
+  },
   
+  GetImageURL: function(serverID, title, resultCallback){
+    this.GetServerFK(serverID, serverFK => {
+      if(serverFK < 0){
+        resultCallback("Server not found");
+      }
+      else {
+        var sql = "SELECT `images`.`url` FROM `images` " +
+        "WHERE `images`.`server_fk` = '" + serverFK + "' AND `images`.`title` LIKE '%" + title + "%'";
+        dbConnection.query(sql, function (err, result, fields) {
+          if (err) throw err;
+          if(result != ""){
+            resultCallback(result[0]);
+          }
+          else{
+            var sql = "SELECT `images`.`url` FROM `images`" +
+            "WHERE `images`.`title` LIKE '%" + title + "%' AND `images`.`is_global` = 1";
+            dbConnection.query(sql, function (err, result, fields) {
+              if (err) throw err;
+              if(result != ""){
+                resultCallback(result[0]);
+              }
+              else{
+                resultCallback(null);
+              }
+            });
+          }
+        });
+      }
+    });
+  }
+
+
+
 };
 
 
@@ -206,5 +266,28 @@ function AddUserStatsRow(userFK){
   dbConnection.query(sqlInsertUStats, function (err_ins_ustats, result_ins_ustats) {
     if (err_ins_ustats) throw err_ins_ustats;
   });
+}
+
+
+// Image
+
+function DoesTitleAlreadyExist(serverID, title, ExistsCallback){
+  var sql = "SELECT `images`.`id` FROM `images`, `servers` WHERE `servers`.`dscr_id` = " + serverID + 
+    " AND `images`.`server_fk` = `servers`.`id` AND `images`.`title` = \"" + title + "\"";
+    dbConnection.query(sql, function (err, result, fields) {
+      if (err) throw err;
+      if(result == ""){
+        var sqlGlobal = "SELECT `images`.`id` FROM `images` WHERE `images`.`is_global` = 1 AND `images`.`title` = \"" + title + "\"";
+        dbConnection.query(sqlGlobal, function (err, result, fields) {
+          if(err) throw err;
+          if(result == ""){
+            ExistsCallback(false);
+          }
+        });
+      }
+      else{
+        ExistsCallback(true);
+      }
+    });
 }
 

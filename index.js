@@ -3,6 +3,7 @@ const Discord = require('discord.js');
 
 var honoringSystem = require('./scripts/honoring_system.js');
 var guildControls = require('./scripts/guild_controls.js');
+var imageSystem = require('./scripts/image_system.js');
 
 const prefix = "!";
 
@@ -47,6 +48,10 @@ client.on("message", async message => {
   }
   else if(command === "honor"){
     honoringSystem.CMD_Honor(message, args, "honor");
+  }
+  // Images
+  else if(command === "image"){
+    imageSystem.ParseParameters(message, args);
   }
   // Decided to ignore any unknown command
   // in case people are trying to call another bot
