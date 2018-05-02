@@ -5,7 +5,7 @@ var honoringSystem = require('./scripts/honoring_system.js');
 var guildControls = require('./scripts/guild_controls.js');
 var imageSystem = require('./scripts/image_system.js');
 
-const prefix = "!";
+const defaultPrefix = "!";
 
 
 // Connecting Discord bot
@@ -23,9 +23,9 @@ client.on('ready', function() {
 // Bot commands
 client.on("message", async message => {
   if(message.author.bot) return;
-  if(message.content.indexOf(prefix) !== 0) return;
+  if(message.content.indexOf(defaultPrefix) !== 0) return;
 
-  const args = message.content.slice(prefix.length).trim().split(/ +/);
+  const args = message.content.slice(defaultPrefix.length).trim().split(/ +/);
   const command = args.shift().toLowerCase();
 
   if (command === "addserver") {
@@ -71,4 +71,4 @@ client.on("guildDelete", guild => {
   console.log("Removed from a guild");
 });
 
-client.on("error", (error) => console.error(error));
+client.on("error", (error) => console.log("Error was encountered. Continuing..."));
