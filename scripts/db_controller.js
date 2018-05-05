@@ -35,6 +35,15 @@ module.exports = {
     });
   },
 
+  UpdateServerFlags: function(guildID, newFlag){
+    let sql = "UPDATE `server_conf`, `servers` " +
+    "SET `flags` = " + newFlag + " "+
+    "WHERE `servers`.`dscr_id` = '" + guildID + "' AND `server_conf`.`id` = `servers`.`server_conf_fk` ;";
+    dbConnection.query(sql, function (err, result) {
+      if (err) throw err;
+    });
+  },
+
   AddServer: function(server){
     return new Promise((resolve, reject) => {
       var sql = "SELECT * FROM `servers` WHERE `dscr_id` = " + server.id;

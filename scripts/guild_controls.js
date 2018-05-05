@@ -14,7 +14,6 @@ module.exports = {
     // Must load discord id as key, admin_role as value, flags
     serverControl.GetServersAndConfigs(guilds =>{
       for(var i = 0; i < guilds.length; i++){
-        //console.log(guilds[i]["dscr_id"]);
         serverConfigs[guilds[i]["dscr_id"]] = {
           admin_role: guilds[i]["admin_role"],
           flags: guilds[i]["flags"]
@@ -37,7 +36,8 @@ module.exports = {
   IsFeatureEnabled: function(feature, serverID){
     if(this.features.hasOwnProperty(feature)){
       if(serverConfigs.hasOwnProperty(serverID)){
-        if(this.features[feature] & serverConfigs[serverID]["flags"] > 0){
+        console.log(this.features[feature] & serverConfigs[serverID]["flags"])
+        if(parseInt(this.features[feature] & serverConfigs[serverID]["flags"]) > 0){
           return true;
         }
         else{
@@ -51,16 +51,29 @@ module.exports = {
     else{
       throw "Feature not found!";
     }
-
   },
 
+  DisableFeature: function(feature, serverID){
+    if(!this.features.hasOwnProperty(feature)){
+      return "Feature not found!";
+    }
+    if(!this.IsFeatureEnabled(feature, serverID)){
+      return "This feature is already disabled.";
+    }
+    else{
+      let state = serverConfigs[serverID]["flags"] ^ this.features[feature];
+      serverControl.UpdateServerFlags(serverID, state);
+      serverConfigs[serverID]["flags"] = state;
+      return "`" + feature + "` feature has been disabled.";
+    }
+  },
 
   CMD_AddServer: function(message){
     if(message.author.id === message.guild.ownerID){
       serverControl.AddServer(message.guild).then(result => {
         if(result === true){
           message.reply("good news! Server was added to my database, and your user was created as well!");
-          setTimeout(() => { this.UpdateGuildData(message.guild.id); }, 2500);
+          setTimeout(() => { this.UpdateGuildData(message.guild.id); }, 1500);
         }
         else{
           message.reply("looks like this server already exists in my database!");
@@ -83,6 +96,11 @@ module.exports = {
           "Feature can be command without `!` prefix or as listen in `!akeno-mng features`.\n"+
           "\nExample: `!akeno-mng fdisable honor`");
           return;
+        }
+
+        if(args[1] === "pat" || args[1] === "thank" || args[1] === "honor" || args[1] === "honors"){
+          message.channel.send(this.DisableFeature("honors", message.guild.id));
+
         }
       }
       else if(args[0] === "fenable"){
