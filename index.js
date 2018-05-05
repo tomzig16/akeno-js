@@ -17,6 +17,7 @@ client.on('ready', function() {
   console.log('Bot has been started');
   serverControl.StartServerPokingRoutine();
   console.log("Database started.");
+  guildControls.LoadGuilds();
 });
 
 

@@ -17,6 +17,15 @@ module.exports = {
     PokeServer();
   }, 
 
+  GetServersAndConfigs: function(guildsCallback){
+    var sql = "SELECT `servers`.`dscr_id`, `server_conf`.`admin_role`, `server_conf`.`flags` FROM `servers`, `server_conf` "+
+    "WHERE `server_conf`.`id` = `servers`.`server_conf_fk`";
+    dbConnection.query(sql, function (err, result, fields) {
+      if (err) throw err;
+      guildsCallback(result);
+    });
+  },
+
   AddServer: function(server, ResultCallback){
     var sql = "SELECT * FROM `servers` WHERE `dscr_id` = " + server.id;
     dbConnection.query(sql, function (err, result, fields) {
