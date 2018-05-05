@@ -31,6 +31,9 @@ client.on("message", async message => {
   if (command === "addserver") {
     guildControls.CMD_AddServer(message);
   }
+  if (command === "akeno-mng"){
+    guildControls.CMD_ManageAkeno(message, args);
+  }
   else if(command === "join_h"){
     honoringSystem.CMD_JoinH(message);
   }

@@ -1,4 +1,5 @@
 let serverControl = require('./db_controller.js');
+
 module.exports = {
   CMD_AddServer: function(message){
     if(message.author.id === message.guild.ownerID){
@@ -13,6 +14,23 @@ module.exports = {
     }
     else{
       return message.reply("Sorry, you don't have permission to do that.");
+    }
+  },
+
+  CMD_ManageAkeno: function(message, args){
+    if(message.author.id === message.guild.ownerID){
+      if(args[0] === "fdisable"){
+        message.reply("WIP");
+      }
+      else if(args[0] === "fenable"){
+        message.reply("WIP");
+      }
+      else if(args[0] === "help"){
+        message.reply("WIP");
+      }
+      else if(args[0] === "features"){
+        message.reply("WIP");
+      }
     }
   }
 
