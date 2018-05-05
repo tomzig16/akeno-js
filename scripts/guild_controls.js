@@ -24,6 +24,16 @@ module.exports = {
     });
   },
 
+  UpdateGuildData: function(guildID){
+    serverControl.GetSingleServerConfigs(guildID, guild =>{
+      serverConfigs[guild[0]["dscr_id"]] = {
+        admin_role: guild[0]["admin_role"],
+        flags: guild[0]["flags"]
+      }
+      console.log(guildID + " guild was updated.");
+    });
+  },
+
   IsFeatureEnabled: function(feature, serverID){
     if(this.features.hasOwnProperty(feature)){
       if(serverConfigs.hasOwnProperty(serverID)){
@@ -44,20 +54,22 @@ module.exports = {
 
   },
 
+
   CMD_AddServer: function(message){
     if(message.author.id === message.guild.ownerID){
-      serverControl.AddServer(message.guild, function(result){
+      serverControl.AddServer(message.guild).then(result => {
         if(result === true){
           message.reply("good news! Server was added to my database, and your user was created as well!");
+          setTimeout(() => { this.UpdateGuildData(message.guild.id); }, 2500);
         }
         else{
           message.reply("looks like this server already exists in my database!");
         }
-      });
+      }).catch(err => {console.log("Error was encountered during AddServer."); throw err; })
     }
     else{
       return message.reply("Sorry, you don't have permission to do that.");
-    }
+    }   
   },
 
   CMD_ManageAkeno: function(message, args){

@@ -26,18 +26,29 @@ module.exports = {
     });
   },
 
-  AddServer: function(server, ResultCallback){
-    var sql = "SELECT * FROM `servers` WHERE `dscr_id` = " + server.id;
+  GetSingleServerConfigs: function(guildID, guildCallback){
+    var sql = "SELECT `servers`.`dscr_id`, `server_conf`.`admin_role`, `server_conf`.`flags` FROM `servers`, `server_conf` "+
+    "WHERE `servers`.`dscr_id` = '" + guildID + "' AND `server_conf`.`id` = `servers`.`server_conf_fk`";
     dbConnection.query(sql, function (err, result, fields) {
       if (err) throw err;
-      if(result == ""){
-        InsertServer(server);
-        ResultCallback(true);
-      }
-      else{
-        console.log("Server already exists in database.");
-        ResultCallback(false);
-      }
+      guildCallback(result);
+    });
+  },
+
+  AddServer: function(server){
+    return new Promise((resolve, reject) => {
+      var sql = "SELECT * FROM `servers` WHERE `dscr_id` = " + server.id;
+      dbConnection.query(sql, function (err, result, fields) {
+        if (err) return reject(err);
+        if(result == ""){
+          InsertServer(server);
+          return resolve(true)
+        }
+        else{
+          console.log("Server already exists in database.");
+          return resolve(false);
+        }
+      });
     });
   },
 
