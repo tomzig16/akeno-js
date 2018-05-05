@@ -4,6 +4,12 @@ var serverConfigs = {};
 
 module.exports = {
 
+  features:{
+    nonowner: 1,
+    honors: 2,
+    images: 4
+  },
+
   LoadGuilds: function(){
     // Must load discord id as key, admin_role as value, flags
     serverControl.GetServersAndConfigs(guilds =>{
@@ -18,7 +24,23 @@ module.exports = {
     });
   },
 
-  IsFeatureEnabled: function(feature, serverID, callback){
+  IsFeatureEnabled: function(feature, serverID){
+    if(this.features.hasOwnProperty(feature)){
+      if(serverConfigs.hasOwnProperty(serverID)){
+        if(this.features[feature] & serverConfigs[serverID]["flags"] > 0){
+          return true;
+        }
+        else{
+          return false;
+        }
+      }
+      else{
+        throw "Server not found";
+      }
+    }
+    else{
+      throw "Feature not found!";
+    }
 
   },
 
@@ -45,7 +67,7 @@ module.exports = {
       }
       if(args[0] === "fdisable"){
         if(args.length < 2 || args[1] === "help"){
-          message.channel.send("Usage: '!akeno-mng fdisable [feature]`. "+
+          message.channel.send("Usage: `!akeno-mng fdisable [feature]`. "+
           "Feature can be command without `!` prefix or as listen in `!akeno-mng features`.\n"+
           "\nExample: `!akeno-mng fdisable honor`");
           return;
@@ -56,6 +78,7 @@ module.exports = {
       }
       else if(args[0] === "features"){
         message.reply("WIP");
+        console.log(this.IsFeatureEnabled("nonowner", message.guild.id));
       }
     //}
   }
