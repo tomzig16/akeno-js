@@ -22,6 +22,7 @@ CREATE TABLE `akeno_debug`.`servers`(
 CREATE TABLE `akeno_debug`.`server_conf`(
     `id` INT(5) NOT NULL AUTO_INCREMENT,
     `admin_role` VARCHAR(32) NULL DEFAULT NULL,
+    `flags` VARCHAR(16) NOT NULL DEFAULT '0000000000000000'
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
 

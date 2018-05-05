@@ -213,7 +213,7 @@ function PokeServer(){
 }
 
 function InsertServer(server){
-  var sqlInsertServConf =  "INSERT INTO `server_conf` (`id`, `admin_role`) VALUES (NULL, NULL);";
+  var sqlInsertServConf =  "INSERT INTO `server_conf` (`id`, `admin_role`, `flags`) VALUES (NULL, NULL, DEFAULT);";
   dbConnection.query(sqlInsertServConf, function (err_ins_conf, result_ins_conf) {
     if (err_ins_conf) throw err_ins_conf;
 
