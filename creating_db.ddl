@@ -63,3 +63,13 @@ CREATE TABLE `akeno_debug`.`images`(
 ) ENGINE = InnoDB;
 
 ALTER TABLE `akeno_debug`.`images` ADD FOREIGN KEY (`server_fk`) REFERENCES `akeno_debug`.`servers`(`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+/* Add some global images */
+INSERT INTO `akeno_debug`.`images` (`id`, `server_fk`, `author_id`, `title`, `url`, `is_global`) 
+VALUES (NULL, '0', '0', 'speechless', 'https://media.discordapp.net/attachments/430073596698820638/442659724966494208/YAGpXPd.png', '1');
+INSERT INTO `akeno_debug`.`images` (`id`, `server_fk`, `author_id`, `title`, `url`, `is_global`) 
+VALUES (NULL, '0', '0', 'suspicious fry', 'https://media.discordapp.net/attachments/430073596698820638/442673458388926465/giphy.gif', '1');
+INSERT INTO `akeno_debug`.`images` (`id`, `server_fk`, `author_id`, `title`, `url`, `is_global`) 
+VALUES (NULL, '0', '0', 'you are pervert', 'https://media.discordapp.net/attachments/430073596698820638/442673792507183125/90a.gif', '1');
+INSERT INTO `akeno_debug`.`images` (`id`, `server_fk`, `author_id`, `title`, `url`, `is_global`) 
+VALUES (NULL, '0', '0', 'smiling zero two', 'https://media.discordapp.net/attachments/430073596698820638/442674084502044674/SmillingZeroTwo.png', '1');
