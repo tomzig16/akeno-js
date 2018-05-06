@@ -17,6 +17,7 @@ client.on('ready', function() {
   console.log('Bot has been started');
   serverControl.StartServerPokingRoutine();
   console.log("Database started.");
+  guildControls.LoadGuilds();
 });
 
 
@@ -31,27 +32,34 @@ client.on("message", async message => {
   if (command === "addserver") {
     guildControls.CMD_AddServer(message);
   }
-  else if(command === "join_h"){
-    honoringSystem.CMD_JoinH(message);
+  else if (command === "akeno-mng"){
+    guildControls.CMD_ManageAkeno(message, args);
   }
-  else if(command === "status"){
-    honoringSystem.CMD_Status(message);
+  // Honoring system commands
+  else if(guildControls.IsFeatureEnabled("honors", message.guild.id)){
+    if(command === "join_h"){
+      honoringSystem.CMD_JoinH(message);
+    }
+    else if(command === "status"){
+      honoringSystem.CMD_Status(message);
+    }
+    else if(command === "collect"){
+      honoringSystem.CMD_Collect(message);
+    }
+    else if(command === "pat"){
+      honoringSystem.CMD_Honor(message, args, "pat");
+    }
+    else if(command === "thank"){
+      honoringSystem.CMD_Honor(message, args, "thank");
+    }
+    else if(command === "honor"){
+      honoringSystem.CMD_Honor(message, args, "honor");
+    }
   }
-  else if(command === "collect"){
-    honoringSystem.CMD_Collect(message);
-  }
-  else if(command === "pat"){
-    honoringSystem.CMD_Honor(message, args, "pat");
-  }
-  else if(command === "thank"){
-    honoringSystem.CMD_Honor(message, args, "thank");
-  }
-  else if(command === "honor"){
-    honoringSystem.CMD_Honor(message, args, "honor");
-  }
-  // Images
-  else if(command === "image"){
-    imageSystem.ParseParameters(message, args);
+  else if(guildControls.IsFeatureEnabled("images", message.guild.id)){
+    if(command === "image"){
+      imageSystem.ParseParameters(message, args);
+    }
   }
   // Decided to ignore any unknown command
   // in case people are trying to call another bot

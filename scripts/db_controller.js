@@ -17,18 +17,47 @@ module.exports = {
     PokeServer();
   }, 
 
-  AddServer: function(server, ResultCallback){
-    var sql = "SELECT * FROM `servers` WHERE `dscr_id` = " + server.id;
+  GetServersAndConfigs: function(guildsCallback){
+    var sql = "SELECT `servers`.`dscr_id`, `server_conf`.`admin_role`, `server_conf`.`flags` FROM `servers`, `server_conf` "+
+    "WHERE `server_conf`.`id` = `servers`.`server_conf_fk`";
     dbConnection.query(sql, function (err, result, fields) {
       if (err) throw err;
-      if(result == ""){
-        InsertServer(server);
-        ResultCallback(true);
-      }
-      else{
-        console.log("Server already exists in database.");
-        ResultCallback(false);
-      }
+      guildsCallback(result);
+    });
+  },
+
+  GetSingleServerConfigs: function(guildID, guildCallback){
+    var sql = "SELECT `servers`.`dscr_id`, `server_conf`.`admin_role`, `server_conf`.`flags` FROM `servers`, `server_conf` "+
+    "WHERE `servers`.`dscr_id` = '" + guildID + "' AND `server_conf`.`id` = `servers`.`server_conf_fk`";
+    dbConnection.query(sql, function (err, result, fields) {
+      if (err) throw err;
+      guildCallback(result);
+    });
+  },
+
+  UpdateServerFlags: function(guildID, newFlag){
+    let sql = "UPDATE `server_conf`, `servers` " +
+    "SET `flags` = " + newFlag + " "+
+    "WHERE `servers`.`dscr_id` = '" + guildID + "' AND `server_conf`.`id` = `servers`.`server_conf_fk` ;";
+    dbConnection.query(sql, function (err, result) {
+      if (err) throw err;
+    });
+  },
+
+  AddServer: function(server){
+    return new Promise((resolve, reject) => {
+      var sql = "SELECT * FROM `servers` WHERE `dscr_id` = " + server.id;
+      dbConnection.query(sql, function (err, result, fields) {
+        if (err) return reject(err);
+        if(result == ""){
+          InsertServer(server);
+          return resolve(true)
+        }
+        else{
+          console.log("Server already exists in database.");
+          return resolve(false);
+        }
+      });
     });
   },
 
@@ -213,7 +242,7 @@ function PokeServer(){
 }
 
 function InsertServer(server){
-  var sqlInsertServConf =  "INSERT INTO `server_conf` (`id`, `admin_role`) VALUES (NULL, NULL);";
+  var sqlInsertServConf =  "INSERT INTO `server_conf` (`id`, `admin_role`, `flags`) VALUES (NULL, NULL, DEFAULT);";
   dbConnection.query(sqlInsertServConf, function (err_ins_conf, result_ins_conf) {
     if (err_ins_conf) throw err_ins_conf;
 
