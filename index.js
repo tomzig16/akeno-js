@@ -31,34 +31,43 @@ client.on("message", async message => {
 
   if (command === "addserver") {
     guildControls.CMD_AddServer(message);
+    return;
   }
   else if (command === "akeno-mng"){
     guildControls.CMD_ManageAkeno(message, args);
+    return;
   }
   // Honoring system commands
-  else if(guildControls.IsFeatureEnabled("honors", message.guild.id)){
+  if(guildControls.IsFeatureEnabled("honors", message.guild.id)){
     if(command === "join_h"){
       honoringSystem.CMD_JoinH(message);
+      return;
     }
     else if(command === "status"){
       honoringSystem.CMD_Status(message);
+      return;
     }
     else if(command === "collect"){
       honoringSystem.CMD_Collect(message);
+      return;
     }
     else if(command === "pat"){
       honoringSystem.CMD_Honor(message, args, "pat");
+      return;
     }
     else if(command === "thank"){
       honoringSystem.CMD_Honor(message, args, "thank");
+      return;
     }
     else if(command === "honor"){
       honoringSystem.CMD_Honor(message, args, "honor");
+      return;
     }
   }
-  else if(guildControls.IsFeatureEnabled("images", message.guild.id)){
+  if(guildControls.IsFeatureEnabled("images", message.guild.id)){
     if(command === "image"){
       imageSystem.ParseParameters(message, args);
+      return;
     }
   }
   // Decided to ignore any unknown command

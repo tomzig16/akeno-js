@@ -46,6 +46,7 @@ module.exports = {
       }
       else{
         throw "Server not found";
+        // Throws error
       }
     }
     else{
