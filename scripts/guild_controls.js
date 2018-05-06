@@ -101,7 +101,7 @@ module.exports = {
   },
 
   CMD_ManageAkeno: function(message, args){
-    //if(message.author.id === message.guild.ownerID){
+    if(message.author.id === message.guild.ownerID){
       if(args.length < 1 || args[0] === "help"){
         message.channel.send("!akeno-mng lets you control what Akeno features your server could use. "+
         "Currently available commands:\n" +
@@ -153,7 +153,7 @@ module.exports = {
         featuresMessage += "```\nYou can enable and disable features with `!akeno-mng fenable/fdisable [feature]`";
         message.channel.send(featuresMessage);
       }
-    //}
+    }
   }
 
 };
