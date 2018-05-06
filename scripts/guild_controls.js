@@ -150,7 +150,7 @@ module.exports = {
         for(var key in this.features){
           featuresMessage += key + "\t\t" + this.IsFeatureEnabled(key, message.guild.id) + "\n";
         }
-        featuresMessage += "```";
+        featuresMessage += "```\nYou can enable and disable features with `!akeno-mng fenable/fdisable [feature]`";
         message.channel.send(featuresMessage);
       }
     //}
