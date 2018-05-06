@@ -68,6 +68,21 @@ module.exports = {
     }
   },
 
+  EnableFeature: function(feature, serverID){
+    if(!this.features.hasOwnProperty(feature)){
+      return "Feature not found!";
+    }
+    if(this.IsFeatureEnabled(feature, serverID)){
+      return "This feature is already enabled.";
+    }
+    else{
+      let state = serverConfigs[serverID]["flags"] & this.features[feature];
+      serverControl.UpdateServerFlags(serverID, state);
+      serverConfigs[serverID]["flags"] = state;
+      return "`" + feature + "` feature has been enabled.";
+    }
+  },
+
   CMD_AddServer: function(message){
     if(message.author.id === message.guild.ownerID){
       serverControl.AddServer(message.guild).then(result => {
@@ -93,18 +108,32 @@ module.exports = {
       if(args[0] === "fdisable"){
         if(args.length < 2 || args[1] === "help"){
           message.channel.send("Usage: `!akeno-mng fdisable [feature]`. "+
-          "Feature can be command without `!` prefix or as listen in `!akeno-mng features`.\n"+
+          "Feature can be command without `!` prefix or as listed in `!akeno-mng features`.\n"+
           "\nExample: `!akeno-mng fdisable honor`");
           return;
         }
 
         if(args[1] === "pat" || args[1] === "thank" || args[1] === "honor" || args[1] === "honors"){
           message.channel.send(this.DisableFeature("honors", message.guild.id));
-
+        }
+        if(args[i] === "image" || args[i] === "images"){
+          message.channel.send(this.DisableFeature("images", message.guild.id));
         }
       }
       else if(args[0] === "fenable"){
-        message.reply("WIP");
+        if(args.length < 2 || args[1] === "help"){
+          message.channel.send("Usage: `!akeno-mng fenable [feature]`. "+
+          "Feature can be command without `!` prefix or as listed in `!akeno-mng features`.\n"+
+          "\nExample: `!akeno-mng fenable honor`");
+          return;
+        }
+
+        if(args[1] === "pat" || args[1] === "thank" || args[1] === "honor" || args[1] === "honors"){
+          message.channel.send(this.EnableFeature("honors", message.guild.id));
+        }
+        if(args[i] === "image" || args[i] === "images"){
+          message.channel.send(this.EnableFeature("images", message.guild.id));
+        }
       }
       else if(args[0] === "features"){
         message.reply("WIP");
