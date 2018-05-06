@@ -36,7 +36,7 @@ module.exports = {
   IsFeatureEnabled: function(feature, serverID){
     if(this.features.hasOwnProperty(feature)){
       if(serverConfigs.hasOwnProperty(serverID)){
-        console.log(this.features[feature] & serverConfigs[serverID]["flags"])
+        //console.log(this.features[feature] & serverConfigs[serverID]["flags"])
         if(parseInt(this.features[feature] & serverConfigs[serverID]["flags"]) > 0){
           return true;
         }
@@ -49,7 +49,7 @@ module.exports = {
       }
     }
     else{
-      throw "Feature not found!";
+      throw feature + " feature not found!";
     }
   },
 
@@ -76,7 +76,7 @@ module.exports = {
       return "This feature is already enabled.";
     }
     else{
-      let state = serverConfigs[serverID]["flags"] & this.features[feature];
+      let state = serverConfigs[serverID]["flags"] | this.features[feature];
       serverControl.UpdateServerFlags(serverID, state);
       serverConfigs[serverID]["flags"] = state;
       return "`" + feature + "` feature has been enabled.";
@@ -103,7 +103,13 @@ module.exports = {
   CMD_ManageAkeno: function(message, args){
     //if(message.author.id === message.guild.ownerID){
       if(args.length < 1 || args[0] === "help"){
-        message.reply("WIP");
+        message.channel.send("!akeno-mng lets you control what Akeno features your server could use. "+
+        "Currently available commands:\n" +
+        "`!akeno-mng fdisable [feature]` - disables certain feature\n" +
+        "`!akeno-mng fenable [feature]` - enables certain feature\n" +
+        "`!akeno-mng features` - displays lists of available features together with their current status for the server\n" + 
+        "`!akeno-mng help` - shows this help message\n\n" +
+        "Each command (except for `features`) accepts help as a parameter for further help!");
       }
       if(args[0] === "fdisable"){
         if(args.length < 2 || args[1] === "help"){
@@ -112,11 +118,13 @@ module.exports = {
           "\nExample: `!akeno-mng fdisable honor`");
           return;
         }
-
-        if(args[1] === "pat" || args[1] === "thank" || args[1] === "honor" || args[1] === "honors"){
+        else if(this.features.hasOwnProperty(args[1])){
+          message.channel.send(this.DisableFeature(args[1], message.guild.id));
+        }
+        else if(args[1] === "pat" || args[1] === "thank" || args[1] === "honor"){
           message.channel.send(this.DisableFeature("honors", message.guild.id));
         }
-        if(args[i] === "image" || args[i] === "images"){
+        else if(args[i] === "image"){
           message.channel.send(this.DisableFeature("images", message.guild.id));
         }
       }
@@ -127,17 +135,23 @@ module.exports = {
           "\nExample: `!akeno-mng fenable honor`");
           return;
         }
-
-        if(args[1] === "pat" || args[1] === "thank" || args[1] === "honor" || args[1] === "honors"){
+        else if(this.features.hasOwnProperty(args[1])){
+          message.channel.send(this.EnableFeature(args[1], message.guild.id));
+        }
+        else if(args[1] === "pat" || args[1] === "thank" || args[1] === "honor"){
           message.channel.send(this.EnableFeature("honors", message.guild.id));
         }
-        if(args[i] === "image" || args[i] === "images"){
+        else if(args[1] === "image"){
           message.channel.send(this.EnableFeature("images", message.guild.id));
         }
       }
       else if(args[0] === "features"){
-        message.reply("WIP");
-        console.log(this.IsFeatureEnabled("nonowner", message.guild.id));
+        let featuresMessage = "Here's the list of supported features:\n\nFeature\t\tIs enabled\n```";
+        for(var key in this.features){
+          featuresMessage += key + "\t\t" + this.IsFeatureEnabled(key, message.guild.id) + "\n";
+        }
+        featuresMessage += "```";
+        message.channel.send(featuresMessage);
       }
     //}
   }
