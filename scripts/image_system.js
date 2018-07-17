@@ -4,8 +4,6 @@ var prefixes = ["www", "http://", "https://"];
 
 module.exports = {
 
-
-
   ParseParameters: function(message, args){
     for(var i = 0; i < args.length; i++){
       args[i] = args[i].replace("\"", "");
@@ -20,6 +18,11 @@ module.exports = {
     // Print help for each command
     if(args.length >= 2 && args[1] === "help"){
       message.reply(ImageHelp(args[0]));
+      return;
+    }
+    // List all images available for the server
+    if(args[0] == "list"){
+      PrintInteractibleList(message);
       return;
     }
     // Add !image args[0] commands here
@@ -151,3 +154,47 @@ function IsURLSupported(lastArgument){
   }
   return false;
 }
+
+function PrintInteractibleList(message){
+  /*let embedColor = 10070709;
+  if(message.guild.me.displayColor !== 0){
+    embedColor = message.guild.me.displayColor;
+  }
+  var embedMessage = { 
+    embed:
+      {
+        color: embedColor,
+        author: {
+          name: message.author.username,
+          icon_url: message.author.avatarURL
+        },
+        title: "I HAVE NO IDEA WHAT TO WRITE IN TITLE FIELD.title",
+        fields: [{
+          name: "TEST NAME OF A FIELD",
+          value: "This supports markdown \n| aaa | bbb |\n| --- | --- |\n| ccc | ddd |\n| eee | fff |"
+        }]
+    }
+  };*/
+  // Create a reaction collector
+  var sentMsgID;
+  message.reply("SUP BRO").then(
+    sentMessage => sentMessage.id
+  );
+  const filter = (reaction, user) => {
+    return reaction.emoji.name === '👌' && user.id === message.author.id;
+  };
+  message.channel.fetchMessage('468885178908016651').then(message => {
+    const collector = message.createReactionCollector(filter, { time: 15000 })
+    collector.on('collect', (reaction, reactionCollector) => {
+      console.log(`Collected ${reaction.emoji.name}`);
+      // For each emoji should move 1 or
+    });
+  
+    collector.on('end', collected => {
+      console.log(`Collected ${collected.size} items`);
+    });
+  });
+
+
+}
+
