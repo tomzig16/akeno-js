@@ -212,6 +212,7 @@ function GetStringOfImages(images, startIndex){
     lastPrintedIndex = i;
   }
   if(images.length > 10){
+    availableImages += "\nTotal images available: " + images.length;
     var totalPages = Math.trunc(images.length / 10) + 1;
     var currentPage = Math.trunc(lastPrintedIndex / 10) + 1;
     availableImages += "\nPages: " + currentPage + "/" + totalPages;
