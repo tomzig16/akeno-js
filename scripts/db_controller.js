@@ -220,7 +220,25 @@ module.exports = {
   },
 
   GetAvailableImages: function(serverID, resultCallback){
-    resultCallback("aaaaa");
+    var data = {}; 
+    this.GetServerFK(serverID, server_fk => {
+      var sql = "SELECT `images`.`id`, `images`.`title`, `images`.`url` FROM `images`, `servers` " +
+      "WHERE `server_fk` = '" + server_fk + "' OR `is_global` = 1 GROUP BY `images`.`id`";
+      dbConnection.query(sql, function (err, result, fields) {
+        if (err) throw err;
+        var counter = 0;
+        for(var key in result){
+          counter++;
+          data[key] = {
+            "id": result[key].id,
+            "title": result[key].title,
+            "url": result[key].url
+          };
+        }
+        data["length"] = counter;
+        resultCallback(data);
+      });
+    });
   }
 
 

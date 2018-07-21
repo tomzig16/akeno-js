@@ -177,7 +177,9 @@ function PrintInteractibleList(message){
   };*/
   // Create a reaction collector
   var sentMsgID;
-  serverControl.GetAvailableImages(message.guild.id, availableImages => {
+  serverControl.GetAvailableImages(message.guild.id, images => {
+    // Generate message
+    availableImages = GetStringOfImages(images, 0);   
     message.channel.send(availableImages).then(
       sentMessage => {
         const filter = (reaction, user) => {
@@ -185,8 +187,9 @@ function PrintInteractibleList(message){
           && user.id === message.author.id;
         };
         const collector = sentMessage.createReactionCollector(filter, { time: 15000 });
+        var maxPages = Math.trunc(images.length / 10);
         collector.on('collect', (reaction, reactionCollector) => {
-          console.log(`Collected ${reaction.emoji.name}`);
+          // do stuff
         });
           // For each emoji should move 1 or
         collector.on('end', collected => {
@@ -198,3 +201,18 @@ function PrintInteractibleList(message){
 
 }
 
+function GetStringOfImages(images, startIndex){
+  var availableImages = "```";
+  var lastPrintedIndex = 0;
+  for(var i = startIndex; i < images.length && i < 10; i++){
+    availableImages += i+1 + " " + images[i].title + "\n";
+    lastPrintedIndex = i;
+  }
+  if(images.length > 10){
+    var totalPages = Math.trunc(images.length / 10) + 1;
+    var currentPage = Math.trunc(lastPrintedIndex / 10) + 1;
+    availableImages += "\nPages: " + currentPage + "/" + totalPages;
+  }
+  availableImages += "```";
+  return availableImages;
+}
