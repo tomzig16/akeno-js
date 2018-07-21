@@ -190,13 +190,16 @@ function PrintInteractibleList(message){
 
             availableImages = GetStringOfImages(images, currentPage * 10);
             sentMessage.edit(availableImages);
-            sentMessage.clearReactions()
-            .then(() => {
-              sentMessage.react('⬅');
-              sentMessage.react('➡');
+            // Clean reactions
+            reaction.fetchUsers().then(users => {
+              var reactedUsers = users.filter( user => { return user.id !== message.client.user.id; });
+              for(var i = 0; i < reactedUsers.size; i++){
+                reaction.remove(reactedUsers[i]);
+              }
             });
           }
         });
+        
         collector.on('end', collected => {
           sentMessage.clearReactions();
         });  
@@ -211,8 +214,7 @@ function GetStringOfImages(images, startIndex){
   var lastPrintedIndex = 0;
   
   var maxPerPage = startIndex === 0 ? 10 : (Math.trunc(startIndex / 10) + 1) * 10;
-  for(var i = startIndex;
-     i < images.length && i < maxPerPage; i++){
+  for(var i = startIndex; i < images.length && i < maxPerPage; i++){
     availableImages += i+1 + " " + images[i].title + "\n";
     lastPrintedIndex = i;
   }
