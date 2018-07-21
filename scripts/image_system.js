@@ -156,44 +156,43 @@ function IsURLSupported(lastArgument){
 }
 
 function PrintInteractibleList(message){
-  /*let embedColor = 10070709;
-  if(message.guild.me.displayColor !== 0){
-    embedColor = message.guild.me.displayColor;
-  }
-  var embedMessage = { 
-    embed:
-      {
-        color: embedColor,
-        author: {
-          name: message.author.username,
-          icon_url: message.author.avatarURL
-        },
-        title: "I HAVE NO IDEA WHAT TO WRITE IN TITLE FIELD.title",
-        fields: [{
-          name: "TEST NAME OF A FIELD",
-          value: "This supports markdown \n| aaa | bbb |\n| --- | --- |\n| ccc | ddd |\n| eee | fff |"
-        }]
-    }
-  };*/
   // Create a reaction collector
-  var sentMsgID;
   serverControl.GetAvailableImages(message.guild.id, images => {
     // Generate message
     availableImages = GetStringOfImages(images, 0);   
+    var activeDuration = 30000;
     message.channel.send(availableImages).then(
       sentMessage => {
+        if(images.length > 10){
+          sentMessage.react('⬅').then(sentMessage.react('➡'));
+        }
         const filter = (reaction, user) => {
           return (reaction.emoji.name === '⬅' ||  reaction.emoji.name === '➡') 
           && user.id === message.author.id;
         };
-        const collector = sentMessage.createReactionCollector(filter, { time: 15000 });
+        const collector = sentMessage.createReactionCollector(filter, { time: activeDuration });
         var maxPages = Math.trunc(images.length / 10);
+        var currentPage = 0;
         collector.on('collect', (reaction, reactionCollector) => {
-          // do stuff
+          console.log(`Collected ${reaction.emoji.name}`);
+          if(images.length > 10){
+            if(reaction.emoji.name === '⬅'){
+              if(currentPage > 0){ currentPage--; }
+            }
+            else if(reaction.emoji.name === '➡'){
+              if(currentPage < maxPages){ currentPage++; }
+            }
+            availableImages = GetStringOfImages(images, currentPage * 10);
+            sentMessage.edit(availableImages);
+            sentMessage.clearReactions()
+            .then(
+              sentMessage.react('⬅')
+              .then(sentMessage.react('➡'))
+            );
+          }
         });
-          // For each emoji should move 1 or
         collector.on('end', collected => {
-          console.log(`Collected ${collected.size} items`);
+          sentMessage.clearReactions();
         });  
       }
     );
