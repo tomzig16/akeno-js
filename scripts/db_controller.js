@@ -217,8 +217,11 @@ module.exports = {
         });
       }
     });
-  }
+  },
 
+  GetAvailableImages: function(serverID, resultCallback){
+    resultCallback("aaaaa");
+  }
 
 
 };

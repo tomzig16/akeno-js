@@ -5,7 +5,7 @@ var honoringSystem = require('./scripts/honoring_system.js');
 var guildControls = require('./scripts/guild_controls.js');
 var imageSystem = require('./scripts/image_system.js');
 
-const defaultPrefix = "!";
+const defaultPrefix = "?";
 
 
 // Connecting Discord bot

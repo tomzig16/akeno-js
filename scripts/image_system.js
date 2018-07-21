@@ -177,24 +177,24 @@ function PrintInteractibleList(message){
   };*/
   // Create a reaction collector
   var sentMsgID;
-  message.reply("SUP BRO").then(
-    sentMessage => sentMessage.id
-  );
-  const filter = (reaction, user) => {
-    return reaction.emoji.name === '👌' && user.id === message.author.id;
-  };
-  message.channel.fetchMessage('468885178908016651').then(message => {
-    const collector = message.createReactionCollector(filter, { time: 15000 })
-    collector.on('collect', (reaction, reactionCollector) => {
-      console.log(`Collected ${reaction.emoji.name}`);
-      // For each emoji should move 1 or
-    });
-  
-    collector.on('end', collected => {
-      console.log(`Collected ${collected.size} items`);
-    });
+  serverControl.GetAvailableImages(message.guild.id, availableImages => {
+    message.channel.send(availableImages).then(
+      sentMessage => {
+        const filter = (reaction, user) => {
+          return (reaction.emoji.name === '⬅' ||  reaction.emoji.name === '➡') 
+          && user.id === message.author.id;
+        };
+        const collector = sentMessage.createReactionCollector(filter, { time: 15000 });
+        collector.on('collect', (reaction, reactionCollector) => {
+          console.log(`Collected ${reaction.emoji.name}`);
+        });
+          // For each emoji should move 1 or
+        collector.on('end', collected => {
+          console.log(`Collected ${collected.size} items`);
+        });  
+      }
+    );
   });
-
 
 }
 
