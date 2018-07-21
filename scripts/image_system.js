@@ -4,8 +4,6 @@ var prefixes = ["www", "http://", "https://"];
 
 module.exports = {
 
-
-
   ParseParameters: function(message, args){
     for(var i = 0; i < args.length; i++){
       args[i] = args[i].replace("\"", "");
@@ -20,6 +18,11 @@ module.exports = {
     // Print help for each command
     if(args.length >= 2 && args[1] === "help"){
       message.reply(ImageHelp(args[0]));
+      return;
+    }
+    // List all images available for the server
+    if(args[0] == "list"){
+      PrintInteractibleList(message);
       return;
     }
     // Add !image args[0] commands here
@@ -102,6 +105,12 @@ function ImageHelp(type){
     helpMessage += "If you think that you made a mistake, you can always remove your image (`!image remove help`) and add a new one!\n";
     helpMessage += "\nAh, and yes, you can not add an image which will start with \"help\", \"http://\", \"https://\" or \"www.\" in your title :P. In case you were wondering...";
   }
+  else if(type === "list"){
+    helpMessage = "This command prints titles of available for your server images. 10 images per page and if you have more than 10 images ";
+    helpMessage += "message will automatically contain arrows which would scroll through pages. Only `!image list` author would be able to ";
+    helpMessage += "interact with these controls.";
+    helpMessage += "After 1 minute controls over that message will be gone, but it will not be removed.";
+  }
   else{
     return "sorry, but I know nothing about this command. Please, check `!image help` :c";
   }
@@ -150,4 +159,73 @@ function IsURLSupported(lastArgument){
     }
   }
   return false;
+}
+
+function PrintInteractibleList(message){
+  // Create a reaction collector
+  serverControl.GetAvailableImages(message.guild.id, images => {
+    // Generate message
+    availableImages = GetStringOfImages(images, 0);   
+    const activeDuration = 60000;
+    message.channel.send(availableImages).then(
+      sentMessage => {
+        if(images.length > 10){
+          sentMessage.react('⬅').then(sentMessage.react('➡'));
+        }
+        const filter = (reaction, user) => {
+          return (reaction.emoji.name === '⬅' ||  reaction.emoji.name === '➡') 
+          && user.id === message.author.id;
+        };
+        const collector = sentMessage.createReactionCollector(filter, { time: activeDuration });
+        var maxPages = Math.trunc(images.length / 10);
+        var currentPage = 0;
+        collector.on('collect', (reaction, reactionCollector) => {
+          if(images.length > 10){
+            if(reaction.emoji.name === '⬅'){
+              if(currentPage > 0){ currentPage--; }
+            }
+            else if(reaction.emoji.name === '➡'){
+              if(currentPage < maxPages){ currentPage++; }
+            }
+
+            availableImages = GetStringOfImages(images, currentPage * 10);
+            sentMessage.edit(availableImages);
+            // Clean reactions
+            reaction.fetchUsers().then(users => {
+              var reactedUsers = users.filter( user => { return user.id !== message.client.user.id; });
+              reactedUsers.map((element) => reaction.remove(element));
+              /*for(var i = 0; i < reactedUsers.size; i++){
+                var user = reactedUsers[i];
+                reaction.remove(user);
+              }*/
+            });
+          }
+        });
+
+        collector.on('end', collected => {
+          sentMessage.clearReactions();
+        });  
+      }
+    );
+  });
+
+}
+
+function GetStringOfImages(images, startIndex){
+  var availableImages = "```";
+  var lastPrintedIndex = 0;
+  
+  var maxPerPage = startIndex === 0 ? 10 : (Math.trunc(startIndex / 10) + 1) * 10;
+  for(var i = startIndex; i < images.length && i < maxPerPage; i++){
+    availableImages += i+1 + " " + images[i].title + "\n";
+    lastPrintedIndex = i;
+  }
+  if(images.length > 10){
+    availableImages += "\nTotal images available: " + images.length;
+    var totalPages = Math.trunc(images.length / 10) + 1;
+    var currentPage = Math.trunc(lastPrintedIndex / 10) + 1;
+    availableImages += "\nPages: " + currentPage + "/" + totalPages;
+  }
+  availableImages += "```";
+  return availableImages;
 }
