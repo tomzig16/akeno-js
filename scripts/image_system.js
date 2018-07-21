@@ -193,13 +193,15 @@ function PrintInteractibleList(message){
             // Clean reactions
             reaction.fetchUsers().then(users => {
               var reactedUsers = users.filter( user => { return user.id !== message.client.user.id; });
-              for(var i = 0; i < reactedUsers.size; i++){
-                reaction.remove(reactedUsers[i]);
-              }
+              reactedUsers.map((element) => reaction.remove(element));
+              /*for(var i = 0; i < reactedUsers.size; i++){
+                var user = reactedUsers[i];
+                reaction.remove(user);
+              }*/
             });
           }
         });
-        
+
         collector.on('end', collected => {
           sentMessage.clearReactions();
         });  
