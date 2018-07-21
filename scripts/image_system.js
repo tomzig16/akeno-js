@@ -160,7 +160,7 @@ function PrintInteractibleList(message){
   serverControl.GetAvailableImages(message.guild.id, images => {
     // Generate message
     availableImages = GetStringOfImages(images, 0);   
-    var activeDuration = 30000;
+    const activeDuration = 60000;
     message.channel.send(availableImages).then(
       sentMessage => {
         if(images.length > 10){
@@ -182,6 +182,7 @@ function PrintInteractibleList(message){
             else if(reaction.emoji.name === '➡'){
               if(currentPage < maxPages){ currentPage++; }
             }
+
             availableImages = GetStringOfImages(images, currentPage * 10);
             sentMessage.edit(availableImages);
             sentMessage.clearReactions()
@@ -203,7 +204,10 @@ function PrintInteractibleList(message){
 function GetStringOfImages(images, startIndex){
   var availableImages = "```";
   var lastPrintedIndex = 0;
-  for(var i = startIndex; i < images.length && i < 10; i++){
+  
+  var maxPerPage = startIndex === 0 ? 10 : (Math.trunc(startIndex / 10) + 1) * 10;
+  for(var i = startIndex;
+     i < images.length && i < maxPerPage; i++){
     availableImages += i+1 + " " + images[i].title + "\n";
     lastPrintedIndex = i;
   }
