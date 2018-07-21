@@ -105,6 +105,12 @@ function ImageHelp(type){
     helpMessage += "If you think that you made a mistake, you can always remove your image (`!image remove help`) and add a new one!\n";
     helpMessage += "\nAh, and yes, you can not add an image which will start with \"help\", \"http://\", \"https://\" or \"www.\" in your title :P. In case you were wondering...";
   }
+  else if(type === "list"){
+    helpMessage = "This command prints titles of available for your server images. 10 images per page and if you have more than 10 images ";
+    helpMessage += "message will automatically contain arrows which would scroll through pages. Only `!image list` author would be able to ";
+    helpMessage += "interact with these controls.";
+    helpMessage += "After 1 minute controls over that message will be gone, but it will not be removed.";
+  }
   else{
     return "sorry, but I know nothing about this command. Please, check `!image help` :c";
   }
@@ -174,7 +180,6 @@ function PrintInteractibleList(message){
         var maxPages = Math.trunc(images.length / 10);
         var currentPage = 0;
         collector.on('collect', (reaction, reactionCollector) => {
-          console.log(`Collected ${reaction.emoji.name}`);
           if(images.length > 10){
             if(reaction.emoji.name === '⬅'){
               if(currentPage > 0){ currentPage--; }
