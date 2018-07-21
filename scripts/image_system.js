@@ -186,10 +186,10 @@ function PrintInteractibleList(message){
             availableImages = GetStringOfImages(images, currentPage * 10);
             sentMessage.edit(availableImages);
             sentMessage.clearReactions()
-            .then(
-              sentMessage.react('⬅')
-              .then(sentMessage.react('➡'))
-            );
+            .then(() => {
+              sentMessage.react('⬅');
+              sentMessage.react('➡');
+            });
           }
         });
         collector.on('end', collected => {
