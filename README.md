@@ -60,6 +60,7 @@ It is very early state of this command so users currently can add images and req
 
 * `!image add [title] [url]` - adds image to database. Title can contain more than one word (up to **32** symbols **per title**) and could not be duplicate. URL must end with supported format (`png`, `.jpg`, `.jpeg`, `.gif` or `.webm`)
 * `!image [title]` - posts first found image which cointains given [title] substring in title, which was added to database with
+* `!image list` - posts a list of available images for the server. This list is scrollable for the person who invoked the command
 
 *There will be more commands, planned lists and removing images. Although, there's thought to limit how many images can a single user add to the database*
 
