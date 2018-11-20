@@ -194,7 +194,7 @@ module.exports = {
         resultCallback("Server not found");
       }
       else {
-        var sql = "SELECT `images`.`url` FROM `images` " +
+        var sql = "SELECT `images`.`url`, `images`.`title` FROM `images` " +
         "WHERE `images`.`server_fk` = '" + serverFK + "' AND `images`.`title` LIKE '%" + title + "%'";
         dbConnection.query(sql, function (err, result, fields) {
           if (err) throw err;
@@ -202,7 +202,7 @@ module.exports = {
             resultCallback(result[0]);
           }
           else{
-            var sql = "SELECT `images`.`url` FROM `images`" +
+            var sql = "SELECT `images`.`url`, `images`.`title` FROM `images`" +
             "WHERE `images`.`title` LIKE '%" + title + "%' AND `images`.`is_global` = 1";
             dbConnection.query(sql, function (err, result, fields) {
               if (err) throw err;

@@ -81,7 +81,7 @@ module.exports = {
           message.reply("looks like image title you entered does not exist in my database.");
         }
         else {
-          let embedMessage = GenerateEmbedMessage(message, result.url, title.trim());
+          let embedMessage = GenerateEmbedMessage(message, result.url, result.title);
           message.reply(embedMessage);
         }
       });
@@ -194,10 +194,6 @@ function PrintInteractibleList(message){
             reaction.fetchUsers().then(users => {
               var reactedUsers = users.filter( user => { return user.id !== message.client.user.id; });
               reactedUsers.map((element) => reaction.remove(element));
-              /*for(var i = 0; i < reactedUsers.size; i++){
-                var user = reactedUsers[i];
-                reaction.remove(user);
-              }*/
             });
           }
         });
