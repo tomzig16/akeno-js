@@ -3,16 +3,10 @@ const dotenv = require("dotenv").config();
 const mysql = require("mysql");
 const fs = require("fs");
 
-//const serverControl = require("./scripts/db_controller.js");
-//const honoringSystem = require("./scripts/honoring_system.js");
-//const guildControls = require("./scripts/guild_controls.js");
-//const imageSystem = require("./scripts/image_system.js");
-
 const defaultPrefix = "!";
 
 // Start the systems
 const client = new Discord.Client();
-
 
 registeredCommands = {
     admin: {},
@@ -20,13 +14,12 @@ registeredCommands = {
     default: {}
 }
 
-AddNewCommand = (command, type, cmdUsage, cmdDescription, callback) => {
+module.exports.AddNewCommand = (command, type, cmdUsage, cmdDescription, callback) => {
     registeredCommands[type][command] = {};
     registeredCommands[type][command]["usage"] = cmdUsage;
     registeredCommands[type][command]["description"] = cmdDescription;
     registeredCommands[type][command]["execute"] = callback;
 };
-module.exports.AddNewCommand = AddNewCommand;
 
 var commands = fs.readdirSync("./commands/");
 commands.forEach((script) => {
@@ -47,7 +40,6 @@ client.on("message", async (message) => {
     const args = message.content.slice(defaultPrefix.length).trim().split(/ +/);
     const command = args.shift().toLowerCase();
 
-    // TODO Execute commands
 });
 
 client.on("guildCreate", (guild) => {
