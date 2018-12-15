@@ -263,7 +263,7 @@ module.exports = {
             dbConnection.query(sql, (err, result, fields) => {
                 if (err) throw err;
                 var counter = 0;
-                for(var key in result){
+                for(var key in result) {
                     counter++;
                     data[key] = {
                         "id": result[key].id,
@@ -277,4 +277,78 @@ module.exports = {
     }
   
   
-  };
+};
+
+function InsertServer(server) {
+    var sqlInsertServConf =  "INSERT INTO `server_conf` (`id`, `admin_role`, `flags`) VALUES (NULL, NULL, DEFAULT);";
+    dbConnection.query(sqlInsertServConf, (err_ins_conf, result_ins_conf) => {
+        if (err_ins_conf) throw err_ins_conf;
+        var sqlInsertServer = "INSERT INTO `servers` (`id`, `dscr_id`, `admin_fk`, `server_conf_fk`) VALUES (NULL, '" + 
+                              server.id + "', NULL, '" + result_ins_conf.insertId + "');";
+  
+        dbConnection.query(sqlInsertServer, (err_ins_server, result_ins_server) => {
+            if(err_ins_server) throw err_ins_server;
+            console.log("Server was added to database.");
+            InsertServerOwner(server.owner, result_ins_server.insertId);
+        });
+    });
+}
+  
+function InsertServerOwner(serverOwner, serverTableID){
+    // Might do user insert inside AddUser function, but it needs a callback.
+    // I am leaving it as is for now
+    var sqlInsertServConf = "INSERT INTO `users` (`id`, `name`, `dscr_id`, `server_fk`) VALUES " +
+                            "(NULL, '" + serverOwner.user.tag + "', '" + serverOwner.id + "', '" + serverTableID + "');";
+    dbConnection.query(sqlInsertServConf, (err_ins_usr, result_ins_usr) => {
+        if (err_ins_usr) throw err_ins_usr;
+        console.log("Main admin was added to DB.");
+        // Update server admin fk
+        var sqlUpdateServ = "UPDATE `servers` SET `admin_fk` = '" + result_ins_usr.insertId + "' WHERE `servers`.`id` = " + serverTableID;
+        dbConnection.query(sqlUpdateServ, (err_upd_serv, result_upd_serv) => {
+            if (err_upd_serv) throw err_upd_serv;
+            console.log(result_upd_serv.affectedRows + " record(s) updated");
+        });
+        // Insert into user_stats table
+        AddUserStatsRow(result_ins_usr.insertId);
+    });
+}
+  
+function AddUserToDB(userID, serverID){
+    var sqlInsertUser = "INSERT INTO `users` (`id`, `name`, `dscr_id`, `server_fk`) VALUES " +
+                        "(NULL, '" + userID + "', '" + userID + "', '" + serverID + "');";
+    dbConnection.query(sqlInsertUser, (error, result) => {
+      if (error) throw error;
+      AddUserStatsRow(result.insertId);
+      console.log("New user was added to users DB.");
+    });
+}
+  
+function AddUserStatsRow(userFK){
+    var sqlInsertUStats = "INSERT INTO `user_stats` (`id`, `user_fk`, `pats`, `thanks`, `honors`, `spare_honors`) " +
+                          "VALUES (NULL, '" + userFK + "',  DEFAULT, DEFAULT, DEFAULT, DEFAULT);";
+    dbConnection.query(sqlInsertUStats, (err_ins_ustats, result_ins_ustats) => {
+        if (err_ins_ustats) throw err_ins_ustats;
+    });
+}
+  
+  
+// Image
+function DoesTitleAlreadyExist(serverID, title, ExistsCallback){
+    var sql = "SELECT `images`.`id` FROM `images`, `servers` WHERE `servers`.`dscr_id` = " + serverID + 
+              " AND `images`.`server_fk` = `servers`.`id` AND `images`.`title` = \"" + title + "\"";
+    dbConnection.query(sql, (err, result, fields) => {
+        if (err) throw err;
+        if (result == "") {
+            var sqlGlobal = "SELECT `images`.`id` FROM `images` WHERE `images`.`is_global` = 1 AND `images`.`title` = \"" + title + "\"";
+            dbConnection.query(sqlGlobal, (err, result, fields) => {
+                if(err) throw err;
+                if(result == ""){
+                    ExistsCallback(false);
+                }
+            });
+        }
+        else {
+            ExistsCallback(true);
+        }
+    });
+}
