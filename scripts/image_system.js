@@ -1,5 +1,5 @@
 let serverControl = require('./db_controller.js');
-var supportedFormats = ["png", "jpg", "jpeg", "gif", "webm"];
+var supportedFormats = ["png", "jpg", "jpeg", "gif", "webm", "mp4", "mov"];
 var prefixes = ["www", "http://", "https://"];
 
 module.exports = {
