@@ -1,6 +1,6 @@
 let serverControl = require('./db_controller.js');
 var supportedFormats = ["png", "jpg", "jpeg", "gif", "webm", "mp4", "mov"];
-var supportedVideoFormats = ["mp4", "mov"];
+var supportedVideoFormats = ["webm", "mp4", "mov"];
 var prefixes = ["www", "http://", "https://"];
 
 module.exports = {
@@ -162,8 +162,7 @@ function GenerateVideoMessage(message, videoUrl, title){
           icon_url: message.author.avatarURL
         },
         title: "Responded with \"" + title +"\" video",
-        url: videoUrl, 
-        description: videoUrl
+        url: videoUrl
     }
   };
   return embedMessage;
