@@ -1,5 +1,6 @@
 let serverControl = require('./db_controller.js');
 var supportedFormats = ["png", "jpg", "jpeg", "gif", "webm", "mp4", "mov"];
+var supportedVideoFormats = ["mp4", "mov"];
 var prefixes = ["www", "http://", "https://"];
 
 module.exports = {
@@ -81,8 +82,14 @@ module.exports = {
           message.reply("looks like image title you entered does not exist in my database.");
         }
         else {
-          let embedMessage = GenerateEmbedMessage(message, result.url, result.title);
-          message.reply(embedMessage);
+          if (IsUrlSupportedVideoFormat(result.url)){
+            let videoMessage = GenerateVideoMessage(message, result.url, result.title);
+            message.reply(videoMessage);
+          } 
+          else {
+            let embedMessage = GenerateEmbedMessage(message, result.url, result.title);
+            message.reply(embedMessage);
+          }
         }
       });
     }
@@ -141,11 +148,32 @@ function GenerateEmbedMessage(message, imageURL, title){
   return embedMessage;
 }
 
+function GenerateVideoMessage(message, videoUrl, title){
+  let embedColor = 10070709;
+  if(message.guild.me.displayColor !== 0){
+    embedColor = message.guild.me.displayColor;
+  }
+  var embedMessage = { 
+    embed:
+      {
+        color: embedColor,
+        author: {
+          name: message.author.username,
+          icon_url: message.author.avatarURL
+        },
+        title: "Responded with \"" + title +"\" video",
+        url: videoUrl, 
+        description: videoUrl
+    }
+  };
+  return embedMessage;
+}
+
 function IsURLSupported(lastArgument){
   var splittedArgument = lastArgument.split(".");
   let containsFormat = false;
   for(var i = 0; i < supportedFormats.length; i++){
-    if(splittedArgument[splittedArgument.length - 1] === supportedFormats[i]){
+    if(splittedArgument[splittedArgument.length - 1].toLowerCase() === supportedFormats[i]){
       containsFormat = true;
       break;
     }
@@ -157,6 +185,20 @@ function IsURLSupported(lastArgument){
     if(splittedArgument[0].includes(prefixes[i])){
       return true;
     }
+  }
+  return false;
+}
+
+function IsUrlSupportedVideoFormat(url){
+  try {
+    var splittedArgument = url.split(".");
+    for(var i = 0; i < supportedVideoFormats.length; i++){
+      if(splittedArgument[splittedArgument.length - 1].toLowerCase() === supportedFormats[i]){
+        return true;
+      }
+    }
+  } catch (e){
+    return false;
   }
   return false;
 }
