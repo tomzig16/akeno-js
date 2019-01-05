@@ -31,10 +31,10 @@ function ParseParameters(message, typeName, args){
     message.reply(Help(args[0], typeName, supportedFormats));
     return;
   }
-  // List all images available for the server
+  // List all images or videos available for the server
   if(args[0] == "list"){
     let getMediaFunction = isImage ? serverControl.GetAvailableImages : serverControl.GetAvailableVideos;
-    PrintInteractibleList(message, getMediaFunction);
+    PrintInteractibleList(message, typeName, getMediaFunction);
     return;
   }
   // Add !image args[0] commands here
@@ -206,11 +206,11 @@ function IsUrlSupportedVideoFormat(lastArgument){
   return IsURLSupportedMediaFormat(lastArgument, supportedVideoFormats);
 }
 
-function PrintInteractibleList(message, getAvailableMediaFunction){
+function PrintInteractibleList(message, typeName, getAvailableMediaFunction){
   // Create a reaction collector
   getAvailableMediaFunction(message.guild.id, images => {
     // Generate message
-    availableImages = GetStringOfImages(images, 0);   
+    availableImages = GetStringOfMedia(images, typeName, 0);   
     const activeDuration = 60000;
     message.channel.send(availableImages).then(
       sentMessage => {
@@ -233,7 +233,7 @@ function PrintInteractibleList(message, getAvailableMediaFunction){
               if(currentPage < maxPages){ currentPage++; }
             }
 
-            availableImages = GetStringOfImages(images, currentPage * 10);
+            availableImages = GetStringOfMedia(images, typeName, currentPage * 10);
             sentMessage.edit(availableImages);
             // Clean reactions
             reaction.fetchUsers().then(users => {
@@ -252,7 +252,7 @@ function PrintInteractibleList(message, getAvailableMediaFunction){
 
 }
 
-function GetStringOfImages(images, startIndex){
+function GetStringOfMedia(images, typeName, startIndex){
   var availableImages = "```";
   var lastPrintedIndex = 0;
   
@@ -262,7 +262,7 @@ function GetStringOfImages(images, startIndex){
     lastPrintedIndex = i;
   }
   if(images.length > 10){
-    availableImages += "\nTotal images available: " + images.length;
+    availableImages += "\nTotal " + typeName + "s available: " + images.length;
     var totalPages = Math.trunc(images.length / 10) + 1;
     var currentPage = Math.trunc(lastPrintedIndex / 10) + 1;
     availableImages += "\nPages: " + currentPage + "/" + totalPages;

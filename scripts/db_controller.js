@@ -163,19 +163,19 @@ module.exports = {
 
   // Media management
   InsertNewImage: function(serverID, authorID, title, url, statusCallback){
-    InsertNewMedium(serverID, "images", authorID, title, url, statusCallback);
+    InsertNewMedia(serverID, "images", authorID, title, url, statusCallback);
   },
 
   InsertNewVideo: function(serverID, authorID, title, url, statusCallback){
-    InsertNewMedium(serverID, "videos", authorID, title, url, statusCallback);
+    InsertNewMedia(serverID, "videos", authorID, title, url, statusCallback);
   },
   
   GetImageURL: function(serverID, title, resultCallback){
-    GetMediumURL(serverID, "images", title, resultCallback);
+    GetMediaURL(serverID, "images", title, resultCallback);
   },
 
   GetVideoURL: function(serverID, title, resultCallback){
-    GetMediumURL(serverID, "videos", title, resultCallback);
+    GetMediaURL(serverID, "videos", title, resultCallback);
   },
 
   GetAvailableImages: function(serverID, resultCallback){
@@ -188,7 +188,7 @@ module.exports = {
 };
 
 //Media Management
-function InsertNewMedium(serverID, tableName, authorID, title, url, statusCallback){
+function InsertNewMedia(serverID, tableName, authorID, title, url, statusCallback){
   this.GetServerFK(serverID, serverFK => {
     if(serverFK < 0){
       statusCallback("Server not found");
@@ -212,7 +212,7 @@ function InsertNewMedium(serverID, tableName, authorID, title, url, statusCallba
   });
 } 
 
-function GetMediumURL(serverID, tableName, title, resultCallback){
+function GetMediaURL(serverID, tableName, title, resultCallback){
   this.GetServerFK(serverID, serverFK => {
     if(serverFK < 0){
       resultCallback("Server not found");

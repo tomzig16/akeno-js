@@ -71,6 +71,7 @@ client.on("message", async message => {
     }
     else if (command === "video"){
       mediaSystem.ParseVideoParameters(message, args);
+      return;
     }
   }
   // Decided to ignore any unknown command
