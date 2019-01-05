@@ -161,131 +161,109 @@ module.exports = {
     });
   },
 
-
   // Media management
-  GetAvailableImages: function(serverID, resultCallback){
-    var data = {}; 
-    this.GetServerFK(serverID, server_fk => {
-      var sql = "SELECT `images`.`id`, `images`.`title` FROM `images`, `servers` " +
-      "WHERE `server_fk` = '" + server_fk + "' OR `is_global` = 1 GROUP BY `images`.`id`";
-      dbConnection.query(sql, function (err, result, fields) {
-        if (err) throw err;
-        var counter = 0;
-        for(var key in result){
-          counter++;
-          data[key] = {
-            "id": result[key].id,
-            "title": result[key].title
-            //"url": result[key].url
-          };
-        }
-        data["length"] = counter;
-        resultCallback(data);
-      });
-    });
-  }, 
-
-  
-
-  InsertNewMedium: function(serverID, tableName, authorID, title, url, statusCallback){
-    this.GetServerFK(serverID, serverFK => {
-      if(serverFK < 0){
-        statusCallback("Server not found");
-      }
-      else {
-        DoesMediaTitleAlreadyExist(serverID, tableName, title, status => {
-          if(status === true){
-            statusCallback("Duplicate");
-          }
-          else{
-            var sqlInsertImage =  "INSERT INTO `" + tableName + "` (`id`, `server_fk`, `author_id`, `title`, `url`, `is_global`)  VALUES "+
-            "(NULL, '" + serverFK + "', '" + authorID + "', '" + title + "', '" + url + "', '0');";
-            dbConnection.query(sqlInsertImage, function (error, result) {
-              if (error) throw error;
-                console.log("New entry was added to " + tableName + " table.");
-            });
-            statusCallback(200);
-          }
-        });
-      }
-    });
-  },
-
   InsertNewImage: function(serverID, authorID, title, url, statusCallback){
-    this.InsertNewMedium(serverID, "images", authorID, title, url, statusCallback);
+    InsertNewMedium(serverID, "images", authorID, title, url, statusCallback);
   },
 
   InsertNewVideo: function(serverID, authorID, title, url, statusCallback){
-    this.InsertNewMedium(serverID, "videos", authorID, title, url, statusCallback);
+    InsertNewMedium(serverID, "videos", authorID, title, url, statusCallback);
   },
   
-  GetMediumURL: function(serverID, tableName, title, resultCallback){
-    this.GetServerFK(serverID, serverFK => {
-      if(serverFK < 0){
-        resultCallback("Server not found");
-      }
-      else {
-        var sql = "SELECT `" + tableName + "`.`url`, `" + tableName + "`.`title` FROM `" + tableName + "` " +
-        "WHERE `" + tableName + "`.`server_fk` = '" + serverFK + "' AND `" + tableName + "`.`title` LIKE '%" + title + "%'";
-        dbConnection.query(sql, function (err, result, fields) {
-          if (err) throw err;
-          if(result != ""){
-            resultCallback(result[0]);
-          }
-          else{
-            var sql = "SELECT `" + tableName + "`.`url`, `" + tableName + "`.`title` FROM `" + tableName + "`" +
-            "WHERE `" + tableName + "`.`title` LIKE '%" + title + "%' AND `" + tableName + "`.`is_global` = 1";
-            dbConnection.query(sql, function (err, result, fields) {
-              if (err) throw err;
-              if(result != ""){
-                resultCallback(result[0]);
-              }
-              else{
-                resultCallback(null);
-              }
-            });
-          }
-        });
-      }
-    });
-  },
-
   GetImageURL: function(serverID, title, resultCallback){
-    this.GetMediumURL(serverID, "images", title, resultCallback);
+    GetMediumURL(serverID, "images", title, resultCallback);
   },
 
   GetVideoURL: function(serverID, title, resultCallback){
-    this.GetMediumURL(serverID, "videos", title, resultCallback);
+    GetMediumURL(serverID, "videos", title, resultCallback);
   },
 
-  GetAvailableMedia: function(serverID, tableName, resultCallback){
-    var data = {}; 
-    this.GetServerFK(serverID, server_fk => {
-      var sql = "SELECT `" + tableName + "`.`id`, `" + tableName + "`.`title` FROM `" + tableName + "`, `servers` " +
-      "WHERE `server_fk` = '" + server_fk + "' OR `is_global` = 1 GROUP BY `" + tableName + "`.`id`";
-      dbConnection.query(sql, function (err, result, fields) {
-        if (err) throw err;
-        var counter = 0;
-        for(var key in result){
-          counter++;
-          data[key] = {
-            "id": result[key].id,
-            "title": result[key].title
-            //"url": result[key].url
-          };
-        }
-        data["length"] = counter;
-        resultCallback(data);
-      });
-    });
+  GetAvailableImages: function(serverID, resultCallback){
+    GetAvailableMedia(serverID, "images", resultCallback);
+  }, 
+
+  GetAvailableVideos: function(serverID, resultCallback){
+    GetAvailableMedia(serverID, "videos", resultCallback);
   }
-
-
 };
 
+//Media Management
+function InsertNewMedium(serverID, tableName, authorID, title, url, statusCallback){
+  this.GetServerFK(serverID, serverFK => {
+    if(serverFK < 0){
+      statusCallback("Server not found");
+    }
+    else {
+      DoesMediaTitleAlreadyExist(serverID, tableName, title, status => {
+        if(status === true){
+          statusCallback("Duplicate");
+        }
+        else{
+          var sqlInsertImage =  "INSERT INTO `" + tableName + "` (`id`, `server_fk`, `author_id`, `title`, `url`, `is_global`)  VALUES "+
+          "(NULL, '" + serverFK + "', '" + authorID + "', '" + title + "', '" + url + "', '0');";
+          dbConnection.query(sqlInsertImage, function (error, result) {
+            if (error) throw error;
+              console.log("New entry was added to " + tableName + " table.");
+          });
+          statusCallback(200);
+        }
+      });
+    }
+  });
+} 
 
+function GetMediumURL(serverID, tableName, title, resultCallback){
+  this.GetServerFK(serverID, serverFK => {
+    if(serverFK < 0){
+      resultCallback("Server not found");
+    }
+    else {
+      var sql = "SELECT `" + tableName + "`.`url`, `" + tableName + "`.`title` FROM `" + tableName + "` " +
+      "WHERE `" + tableName + "`.`server_fk` = '" + serverFK + "' AND `" + tableName + "`.`title` LIKE '%" + title + "%'";
+      dbConnection.query(sql, function (err, result, fields) {
+        if (err) throw err;
+        if(result != ""){
+          resultCallback(result[0]);
+        }
+        else{
+          var sql = "SELECT `" + tableName + "`.`url`, `" + tableName + "`.`title` FROM `" + tableName + "`" +
+          "WHERE `" + tableName + "`.`title` LIKE '%" + title + "%' AND `" + tableName + "`.`is_global` = 1";
+          dbConnection.query(sql, function (err, result, fields) {
+            if (err) throw err;
+            if(result != ""){
+              resultCallback(result[0]);
+            }
+            else{
+              resultCallback(null);
+            }
+          });
+        }
+      });
+    }
+  });
+}
 
-
+function GetAvailableMedia(serverID, tableName, resultCallback){
+  var data = {}; 
+  this.GetServerFK(serverID, server_fk => {
+    var sql = "SELECT `" + tableName + "`.`id`, `" + tableName + "`.`title` FROM `" + tableName + "`, `servers` " +
+    "WHERE `server_fk` = '" + server_fk + "' OR `is_global` = 1 GROUP BY `" + tableName + "`.`id`";
+    dbConnection.query(sql, function (err, result, fields) {
+      if (err) throw err;
+      var counter = 0;
+      for(var key in result){
+        counter++;
+        data[key] = {
+          "id": result[key].id,
+          "title": result[key].title
+          //"url": result[key].url
+        };
+      }
+      data["length"] = counter;
+      resultCallback(data);
+    });
+  });
+} 
 
 function PokeServer(){
   setInterval(() => {
