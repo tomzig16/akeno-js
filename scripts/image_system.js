@@ -177,7 +177,7 @@ function IsUrlSupportedVideoFormat(url){
   try {
     var splittedArgument = url.split(".");
     for(var i = 0; i < supportedVideoFormats.length; i++){
-      if(splittedArgument[splittedArgument.length - 1].toLowerCase() === supportedFormats[i]){
+      if(splittedArgument[splittedArgument.length - 1].toLowerCase() === supportedVideoFormats[i]){
         return true;
       }
     }
