@@ -11,7 +11,7 @@ module.exports = {
   ParseVideoParameters: function(message, args){ 
     ParseParameters(message, "video", args);
   }
-}, 
+};
 
 function ParseParameters(message, typeName, args){
   let isImage = typeName === "image";

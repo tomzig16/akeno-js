@@ -189,7 +189,7 @@ module.exports = {
 
 //Media Management
 function InsertNewMedia(serverID, tableName, authorID, title, url, statusCallback){
-  this.GetServerFK(serverID, serverFK => {
+  module.exports.GetServerFK(serverID, serverFK => {
     if(serverFK < 0){
       statusCallback("Server not found");
     }
@@ -213,7 +213,7 @@ function InsertNewMedia(serverID, tableName, authorID, title, url, statusCallbac
 } 
 
 function GetMediaURL(serverID, tableName, title, resultCallback){
-  this.GetServerFK(serverID, serverFK => {
+  module.exports.GetServerFK(serverID, serverFK => {
     if(serverFK < 0){
       resultCallback("Server not found");
     }
@@ -245,7 +245,7 @@ function GetMediaURL(serverID, tableName, title, resultCallback){
 
 function GetAvailableMedia(serverID, tableName, resultCallback){
   var data = {}; 
-  this.GetServerFK(serverID, server_fk => {
+  module.exports.GetServerFK(serverID, server_fk => {
     var sql = "SELECT `" + tableName + "`.`id`, `" + tableName + "`.`title` FROM `" + tableName + "`, `servers` " +
     "WHERE `server_fk` = '" + server_fk + "' OR `is_global` = 1 GROUP BY `" + tableName + "`.`id`";
     dbConnection.query(sql, function (err, result, fields) {
@@ -335,28 +335,6 @@ function AddUserStatsRow(userFK){
   });
 }
 
-
-// Image
-
-function DoesTitleAlreadyExist(serverID, title, ExistsCallback){
-  var sql = "SELECT `images`.`id` FROM `images`, `servers` WHERE `servers`.`dscr_id` = " + serverID + 
-    " AND `images`.`server_fk` = `servers`.`id` AND `images`.`title` = \"" + title + "\"";
-    dbConnection.query(sql, function (err, result, fields) {
-      if (err) throw err;
-      if(result == ""){
-        var sqlGlobal = "SELECT `images`.`id` FROM `images` WHERE `images`.`is_global` = 1 AND `images`.`title` = \"" + title + "\"";
-        dbConnection.query(sqlGlobal, function (err, result, fields) {
-          if(err) throw err;
-          if(result == ""){
-            ExistsCallback(false);
-          }
-        });
-      }
-      else{
-        ExistsCallback(true);
-      }
-    });
-}
 
 function DoesMediaTitleAlreadyExist(serverID, tableName, title, ExistsCallback){
   var sql = "SELECT `" + tableName + "`.`id` FROM `" + tableName + "`, `servers` WHERE `servers`.`dscr_id` = " + serverID + 
