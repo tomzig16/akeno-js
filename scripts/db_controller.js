@@ -162,24 +162,47 @@ module.exports = {
   },
 
 
-  // Image management
+  // Media management
+  GetAvailableImages: function(serverID, resultCallback){
+    var data = {}; 
+    this.GetServerFK(serverID, server_fk => {
+      var sql = "SELECT `images`.`id`, `images`.`title` FROM `images`, `servers` " +
+      "WHERE `server_fk` = '" + server_fk + "' OR `is_global` = 1 GROUP BY `images`.`id`";
+      dbConnection.query(sql, function (err, result, fields) {
+        if (err) throw err;
+        var counter = 0;
+        for(var key in result){
+          counter++;
+          data[key] = {
+            "id": result[key].id,
+            "title": result[key].title
+            //"url": result[key].url
+          };
+        }
+        data["length"] = counter;
+        resultCallback(data);
+      });
+    });
+  }, 
 
-  InsertNewImage: function(serverID, authorID, title, url, statusCallback){
+  
+
+  InsertNewMedium: function(serverID, tableName, authorID, title, url, statusCallback){
     this.GetServerFK(serverID, serverFK => {
       if(serverFK < 0){
         statusCallback("Server not found");
       }
       else {
-        DoesTitleAlreadyExist(serverID, title, status => {
+        DoesMediaTitleAlreadyExist(serverID, tableName, title, status => {
           if(status === true){
             statusCallback("Duplicate");
           }
           else{
-            var sqlInsertImage =  "INSERT INTO `images` (`id`, `server_fk`, `author_id`, `title`, `url`, `is_global`)  VALUES "+
+            var sqlInsertImage =  "INSERT INTO `" + tableName + "` (`id`, `server_fk`, `author_id`, `title`, `url`, `is_global`)  VALUES "+
             "(NULL, '" + serverFK + "', '" + authorID + "', '" + title + "', '" + url + "', '0');";
             dbConnection.query(sqlInsertImage, function (error, result) {
               if (error) throw error;
-                console.log("New image was added to images table.");
+                console.log("New entry was added to " + tableName + " table.");
             });
             statusCallback(200);
           }
@@ -187,23 +210,31 @@ module.exports = {
       }
     });
   },
+
+  InsertNewImage: function(serverID, authorID, title, url, statusCallback){
+    this.InsertNewMedium(serverID, "images", authorID, title, url, statusCallback);
+  },
+
+  InsertNewVideo: function(serverID, authorID, title, url, statusCallback){
+    this.InsertNewMedium(serverID, "videos", authorID, title, url, statusCallback);
+  },
   
-  GetImageURL: function(serverID, title, resultCallback){
+  GetMediumURL: function(serverID, tableName, title, resultCallback){
     this.GetServerFK(serverID, serverFK => {
       if(serverFK < 0){
         resultCallback("Server not found");
       }
       else {
-        var sql = "SELECT `images`.`url`, `images`.`title` FROM `images` " +
-        "WHERE `images`.`server_fk` = '" + serverFK + "' AND `images`.`title` LIKE '%" + title + "%'";
+        var sql = "SELECT `" + tableName + "`.`url`, `" + tableName + "`.`title` FROM `" + tableName + "` " +
+        "WHERE `" + tableName + "`.`server_fk` = '" + serverFK + "' AND `" + tableName + "`.`title` LIKE '%" + title + "%'";
         dbConnection.query(sql, function (err, result, fields) {
           if (err) throw err;
           if(result != ""){
             resultCallback(result[0]);
           }
           else{
-            var sql = "SELECT `images`.`url`, `images`.`title` FROM `images`" +
-            "WHERE `images`.`title` LIKE '%" + title + "%' AND `images`.`is_global` = 1";
+            var sql = "SELECT `" + tableName + "`.`url`, `" + tableName + "`.`title` FROM `" + tableName + "`" +
+            "WHERE `" + tableName + "`.`title` LIKE '%" + title + "%' AND `" + tableName + "`.`is_global` = 1";
             dbConnection.query(sql, function (err, result, fields) {
               if (err) throw err;
               if(result != ""){
@@ -219,11 +250,19 @@ module.exports = {
     });
   },
 
-  GetAvailableImages: function(serverID, resultCallback){
+  GetImageURL: function(serverID, title, resultCallback){
+    this.GetMediumURL(serverID, "images", title, resultCallback);
+  },
+
+  GetVideoURL: function(serverID, title, resultCallback){
+    this.GetMediumURL(serverID, "videos", title, resultCallback);
+  },
+
+  GetAvailableMedia: function(serverID, tableName, resultCallback){
     var data = {}; 
     this.GetServerFK(serverID, server_fk => {
-      var sql = "SELECT `images`.`id`, `images`.`title` FROM `images`, `servers` " +
-      "WHERE `server_fk` = '" + server_fk + "' OR `is_global` = 1 GROUP BY `images`.`id`";
+      var sql = "SELECT `" + tableName + "`.`id`, `" + tableName + "`.`title` FROM `" + tableName + "`, `servers` " +
+      "WHERE `server_fk` = '" + server_fk + "' OR `is_global` = 1 GROUP BY `" + tableName + "`.`id`";
       dbConnection.query(sql, function (err, result, fields) {
         if (err) throw err;
         var counter = 0;
@@ -328,6 +367,26 @@ function DoesTitleAlreadyExist(serverID, title, ExistsCallback){
       if (err) throw err;
       if(result == ""){
         var sqlGlobal = "SELECT `images`.`id` FROM `images` WHERE `images`.`is_global` = 1 AND `images`.`title` = \"" + title + "\"";
+        dbConnection.query(sqlGlobal, function (err, result, fields) {
+          if(err) throw err;
+          if(result == ""){
+            ExistsCallback(false);
+          }
+        });
+      }
+      else{
+        ExistsCallback(true);
+      }
+    });
+}
+
+function DoesMediaTitleAlreadyExist(serverID, tableName, title, ExistsCallback){
+  var sql = "SELECT `" + tableName + "`.`id` FROM `" + tableName + "`, `servers` WHERE `servers`.`dscr_id` = " + serverID + 
+    " AND `" + tableName + "`.`server_fk` = `servers`.`id` AND `" + tableName + "`.`title` = \"" + title + "\"";
+    dbConnection.query(sql, function (err, result, fields) {
+      if (err) throw err;
+      if(result == ""){
+        var sqlGlobal = "SELECT `" + tableName + "`.`id` FROM `" + tableName + "` WHERE `" + tableName + "`.`is_global` = 1 AND `" + tableName + "`.`title` = \"" + title + "\"";
         dbConnection.query(sqlGlobal, function (err, result, fields) {
           if(err) throw err;
           if(result == ""){

@@ -73,3 +73,21 @@ INSERT INTO `akeno_debug`.`images` (`id`, `server_fk`, `author_id`, `title`, `ur
 VALUES (NULL, '1', '0', 'you are pervert', 'https://media.discordapp.net/attachments/430073596698820638/442673792507183125/90a.gif', '1');
 INSERT INTO `akeno_debug`.`images` (`id`, `server_fk`, `author_id`, `title`, `url`, `is_global`) 
 VALUES (NULL, '1', '0', 'smiling zero two', 'https://media.discordapp.net/attachments/430073596698820638/442674084502044674/SmillingZeroTwo.png', '1');
+
+/* Video storing */
+
+CREATE TABLE `akeno_debug`.`videos`(
+    `id` INT(5) NOT NULL AUTO_INCREMENT,
+    `server_fk` INT(5) NOT NULL,
+    `author_id` VARCHAR(64) NOT NULL,
+    `title` VARCHAR(32) NOT NULL,
+    `url` VARCHAR(255) NOT NULL,
+    `is_global` TINYINT(1) NOT NULL DEFAULT '0',
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB;
+
+ALTER TABLE `akeno_debug`.`videos` ADD FOREIGN KEY (`server_fk`) REFERENCES `akeno_debug`.`servers`(`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+/* Add some global videos */
+INSERT INTO `akeno_debug`.`videos` (`id`, `server_fk`, `author_id`, `title`, `url`, `is_global`) 
+VALUES (NULL, '1', '0', 'hasuki waifu', 'https://cdn.discordapp.com/attachments/507985032288141322/527807722729635840/2018-12-27_12-18-08.mp4', '1');

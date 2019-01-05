@@ -3,7 +3,7 @@ const Discord = require('discord.js');
 
 var honoringSystem = require('./scripts/honoring_system.js');
 var guildControls = require('./scripts/guild_controls.js');
-var imageSystem = require('./scripts/image_system.js');
+var mediaSystem = require('./scripts/media_system.js');
 
 const defaultPrefix = "!";
 
@@ -66,8 +66,11 @@ client.on("message", async message => {
   }
   if(guildControls.IsFeatureEnabled("images", message.guild.id)){
     if(command === "image"){
-      imageSystem.ParseParameters(message, args);
+      mediaSystem.ParseImageParameters(message, args);
       return;
+    }
+    else if (command === "video"){
+      mediaSystem.ParseVideoParameters(message, args);
     }
   }
   // Decided to ignore any unknown command
