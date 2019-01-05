@@ -149,23 +149,8 @@ function GenerateEmbedMessage(message, imageURL, title){
 }
 
 function GenerateVideoMessage(message, videoUrl, title){
-  let embedColor = 10070709;
-  if(message.guild.me.displayColor !== 0){
-    embedColor = message.guild.me.displayColor;
-  }
-  var embedMessage = { 
-    embed:
-      {
-        color: embedColor,
-        author: {
-          name: message.author.username,
-          icon_url: message.author.avatarURL
-        },
-        title: "Responded with \"" + title +"\" video",
-        url: videoUrl
-    }
-  };
-  return embedMessage;
+  let videoMessage = `\n${message.author.username} Responded with \"${title}\" video\n\n${videoUrl}`;
+  return videoMessage;
 }
 
 function IsURLSupported(lastArgument){
