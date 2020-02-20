@@ -91,3 +91,18 @@ ALTER TABLE `akeno_debug`.`videos` ADD FOREIGN KEY (`server_fk`) REFERENCES `ake
 /* Add some global videos */
 INSERT INTO `akeno_debug`.`videos` (`id`, `server_fk`, `author_id`, `title`, `url`, `is_global`) 
 VALUES (NULL, '1', '0', 'hasuki waifu', 'https://cdn.discordapp.com/attachments/507985032288141322/527807722729635840/2018-12-27_12-18-08.mp4', '1');
+
+
+
+/* Dadjokes */
+
+CREATE TABLE `akeno_debug`.`dadjokes`(
+    `id` INT(5) NOT NULL AUTO_INCREMENT,
+    `last_use` INT(5) NOT NULL DEFAULT '0',
+    `content` VARCHAR(255) NOT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB;
+
+
+ALTER TABLE `akeno_debug`.`servers` ADD COLUMN `sub2dadjokes` BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE `akeno_debug`.`servers` ADD COLUMN `dadjokechan` VARCHAR(24) NOT NULL DEFAULT 'N/A';
