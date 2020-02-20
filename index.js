@@ -4,6 +4,7 @@ const Discord = require('discord.js');
 var honoringSystem = require('./scripts/honoring_system.js');
 var guildControls = require('./scripts/guild_controls.js');
 var mediaSystem = require('./scripts/media_system.js');
+var dadjokeSystem = require('./scripts/dadjoke_system.js');
 
 const defaultPrefix = "!";
 
@@ -74,6 +75,10 @@ client.on("message", async message => {
       return;
     }
   }
+  if (command === "dadjoke") {
+    dadjokeSystem.ParseDadjokeParameters(message, args);
+    return;
+  }
   // Decided to ignore any unknown command
   // in case people are trying to call another bot
   /*else{
@@ -93,3 +98,5 @@ client.on("guildDelete", guild => {
 });
 
 client.on("error", (error) => console.log("Error was encountered. Continuing..."));
+
+// @TODO: create coroutine for dadjoke scanning (based on the day, at certain time)

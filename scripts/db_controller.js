@@ -184,6 +184,23 @@ module.exports = {
 
   GetAvailableVideos: function(serverID, resultCallback){
     GetAvailableMedia(serverID, "videos", resultCallback);
+  },
+
+  // Dadjokes
+  AddDadjoke: function(content, resultCallback){
+    AddNewDadjokeToDB(content, resultCallback);
+  },
+
+
+  // Misc stuff
+
+  IsSenderBotAuthor: function(senderID, resultCallback) {
+    if(senderID == process.env.BOT_AUTHOR_ID) {
+      resultCallback(true);
+    }
+    else {
+      resultCallback(false);
+    }
   }
 };
 
@@ -354,5 +371,18 @@ function DoesMediaTitleAlreadyExist(serverID, tableName, title, ExistsCallback){
         ExistsCallback(true);
       }
     });
+}
+
+
+// Dadjokes
+
+function AddNewDadjokeToDB(content, callback){
+  var sqlInsertUser =  "INSERT INTO `dadjokes` (`id`, `last_use`, `content`) VALUES " +
+  "(NULL, 0, '" + content + "');";
+  dbConnection.query(sqlInsertUser, function (error, result) {
+    if (error) throw error;
+    AddUserStatsRow(result.insertId);
+    console.log("New dadjoke is added!");
+  });
 }
 
